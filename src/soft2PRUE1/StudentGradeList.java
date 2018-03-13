@@ -7,7 +7,7 @@ public class StudentGradeList extends JList<StudentGrades> {
 	
 	public StudentGradeList(StundentModel model) {
 		super(model);
-		setSelectionMode(	ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	
 		
 	}

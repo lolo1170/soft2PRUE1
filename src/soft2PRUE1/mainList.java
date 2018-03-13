@@ -13,8 +13,9 @@ public class mainList {
 		StundentModel model=new StundentModel();
 		StudentGradeList list=new StudentGradeList(model);
 		JFrame jf=new JFrame();
-		list.add(new StudentGrades("22", "Stefan", "plavsic", "stef.plav@gmail.com"));
+		model.add(new StudentGrades("22", "Stefan", "plavsic", "stef.plav@gmail.com"));
 		jf.add(list);
+		
 		jf.setVisible(true);
 
 	}
