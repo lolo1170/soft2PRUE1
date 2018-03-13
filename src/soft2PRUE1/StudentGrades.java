@@ -36,15 +36,25 @@ public class StudentGrades {
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equals(other.name)) {
+			return false;}
+		else if(!firstName.equals(other.firstName)) {
 			return false;
-		if (sex != other.sex)
+			
+		}else if(!mail.equals(other.mail)){
+			
 			return false;
-		return true;
+			
+		}else if(!id.equals(other.id)){
+			
+			return false;
+			
+		}
+		
+		
+	
+	return true;
 	}
-	
-	
-	
 	
 	
 }

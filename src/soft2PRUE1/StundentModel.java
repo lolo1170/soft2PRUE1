@@ -9,7 +9,8 @@ import javax.swing.AbstractListModel;
 
 public class StundentModel extends AbstractListModel<StudentGrades>{
 	
-	List<StudentGrades> students;
+	List<StudentGrades> students= new ArrayList<StudentGrades>();
+
 
 	 public StundentModel() {
 		students= new ArrayList<StudentGrades>();
@@ -32,13 +33,13 @@ public class StundentModel extends AbstractListModel<StudentGrades>{
 			return;
 		}
 		this.add(student);
-		fireIntervalAdded(null, students.size()-1, students.size()-1);
+		fireIntervalAdded(this, students.size()-1, students.size()-1);
 	}
 	
 	public void remove(StudentGrades stg) {
 		
 		if (students.indexOf(stg)!=-1) {
-			fireIntervalRemoved(stg, students.indexOf(stg), students.indexOf(stg));
+			fireIntervalRemoved(this, students.indexOf(stg), students.indexOf(stg));
 			students.remove(students.indexOf(stg));
 			
 		}
