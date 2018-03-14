@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
+import javax.swing.table.AbstractTableModel;
 
 
 
-public class StundentModel extends AbstractListModel<StudentGrades>{
+public class StundentModel extends AbstractTableModel<StudentGrades>{
 	
 	List<StudentGrades> students= new ArrayList<StudentGrades>();
 
