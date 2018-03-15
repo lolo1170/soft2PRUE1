@@ -2,19 +2,21 @@ package soft2PRUE1;
 
 public class StudentGrades {
 
-	String name;
-	String firstName;
-	String id;
-	String mail;
-	int[]points=new int[6];
+	private String id;
+	private	String name;
+	private String firstName;
+	private String skz;
+	private String mail;
+	private int[]points=new int[6];
 	
 	int sumPoints=0;
 	
-	public StudentGrades(String id,String name,String firstName,String mail) {
+	public StudentGrades(String id,String name,String firstName,String skz,String mail) {
 		this.name=name;
 		this.id=id;
 		this.firstName=firstName;
 		this.mail=mail;
+		this.skz=skz;
 		
 	}
 	
@@ -55,6 +57,63 @@ public class StudentGrades {
 	
 	return true;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getSkz() {
+		return skz;
+	}
+
+	public void setSkz(String skz) {
+		this.skz = skz;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public int[] getPoints() {
+		return points;
+	}
+
+	public void setPoints(int[] points) {
+		this.points = points;
+	}
+
+	public int getSumPoints() {
+		return sumPoints;
+	}
+
+	public void setSumPoints(int sumPoints) {
+		this.sumPoints = sumPoints;
+	}
+
 	
 	
 }

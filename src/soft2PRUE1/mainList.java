@@ -15,14 +15,11 @@ public class mainList {
 	public static void main(String[] args) {
 		
 		StundentModel model=new StundentModel();
-		StudentGradeList list=new StudentGradeList(model);
+		//StudentGradeList list=new StudentGradeList(model);
+		JTable jt=new JTable(model);
 		JFrame jf=new JFrame();
-		
-		JSpinner sp=new JSpinner();
-		sp.setVisible(true);
-		//model.add(new StudentGrades("22", "Stefan", "plavsic", "stef.plav@gmail.com"));
-		jf.getContentPane().add(new JScrollPane(list), BorderLayout.CENTER);
-		
+		jf.add(new JScrollPane(jt), BorderLayout.CENTER);
+		model.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
 		jf.setVisible(true);
 
 	}
