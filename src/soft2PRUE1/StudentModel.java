@@ -1,6 +1,5 @@
 package soft2PRUE1;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-public class StundentModel implements TableModel {
+public class StudentModel implements TableModel {
 
 	public final static int COLCOUNT = 12;
 	/*
@@ -19,7 +18,7 @@ public class StundentModel implements TableModel {
 	List<StudentGrades> list = new ArrayList<StudentGrades>();
 	HashSet<TableModelListener> listeners = new HashSet<TableModelListener>();
 
-	public StundentModel() {
+	public StudentModel() {
 		list = new ArrayList<StudentGrades>();
 	}
 
@@ -59,11 +58,18 @@ public class StundentModel implements TableModel {
 
 	@Override
 	public String getColumnName(int columnIndex) {
+	
+	static	String[] colnames= {"ID","NAME","FIRSTNAME"};
+		
+		if (columnIndex<3) {
+			return colnames[columnIndex];
+		}
+		
 		if (checkIndex(columnIndex)) {
 
 			switch (columnIndex) {
 			case 0:
-				return "id";
+			return "id";
 			case 1:
 				return "name";
 			case 2:
