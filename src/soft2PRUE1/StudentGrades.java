@@ -8,6 +8,13 @@ public class StudentGrades {
 	private String skz;
 	private String mail;
 	private int[]points=new int[6];
+	Grades grade=Grades.Nicht_Genügend;
+	
+	private enum Grades{
+		Sehr_Gut,Gut,Befriedingend,Genügend,Nicht_Genügend;
+	}
+	
+	
 	
 	int sumPoints=0;
 	
@@ -17,9 +24,20 @@ public class StudentGrades {
 		this.firstName=firstName;
 		this.mail=mail;
 		this.skz=skz;
+		for (int i = 0; i < points.length; i++) {
+			points[i]=-1;
+		}
 		
 	}
 	
+	public Grades getGrade() {
+		return grade;
+	}
+
+	public void setGrade(Grades grade) {
+		this.grade = grade;
+	}
+
 	public void addpointsAtIndex(int index,int achievedPoints) {
 		//ToDo check if right index
 		points[index]=achievedPoints;
@@ -58,6 +76,16 @@ public class StudentGrades {
 	return true;
 	}
 
+	public void calcPoints(){
+		
+		for (int i = 0; i < points.length; i++) {
+			
+			sumPoints+=points[i];
+			
+		}
+		
+	}
+	
 	public String getId() {
 		return id;
 	}

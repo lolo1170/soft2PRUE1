@@ -1,5 +1,6 @@
 package soft2PRUE1;
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,9 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.TableCellRenderer;
 
-public class TableFrame extends JFrame{
+public class TableFrame extends JFrame implements TableCellRenderer{
 	
+	private int height=600,width=1200;
 	private static String[]skz= {"521","520","543"};
 	private static JPanel northPnl = new JPanel();
 	private static JButton addBtn;
@@ -20,11 +23,13 @@ public class TableFrame extends JFrame{
 	private static JTextField idField;
 	private static JTextField nameField;
 	private static JTextField FirstnameField;
-	private static JComboBox box;
+	private static JComboBox <String>box;
 	private static JTextField mail;
 	
 	public TableFrame(StudentModel model) {
 	
+		this.setTitle("PSW2-Results");
+	this.setSize(width, height);
 	this.getContentPane().add(northPnl, BorderLayout.NORTH);
 	addBtn=new JButton("add");
 	removeBtn=new JButton("delete");
@@ -43,8 +48,17 @@ public class TableFrame extends JFrame{
 	northPnl.add(addBtn);
 	northPnl.add(removeBtn);
 	northPnl.add(sortBtn);
-	this.getContentPane().add(new JScrollPane(new JTable(model)), BorderLayout.CENTER);
+	JTable jtable=new JTable(model);
+	jtable.setDefaultRenderer(model.getColumnClass(0), );
+	this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
 	this.setVisible(true);
+	}
+
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

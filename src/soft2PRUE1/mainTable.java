@@ -10,20 +10,19 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-public class mainList {
+public class mainTable {
 
 	public static void main(String[] args) {
 		
 	
 		StudentModel model=new StudentModel();
-		new TableFrame(model);
-		//StudentGradeList list=new StudentGradeList(model);
-		JTable jt=new JTable(model);
-		JFrame jf=new JFrame();
-		//TableFrame t=new TableFrame();
-		jf.add(new JScrollPane(jt), BorderLayout.CENTER);
-		//model.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
-		jf.setVisible(true);
+	TableFrame tm=	new TableFrame(model);
+	
+	
+		
+
+		model.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
+		model.add(new StudentGrades("28", "Hari", "pickl","521", "hari.pickl@gmail.com"));
 
 	}
 
