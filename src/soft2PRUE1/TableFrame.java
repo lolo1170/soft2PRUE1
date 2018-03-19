@@ -30,7 +30,7 @@ public class TableFrame extends JFrame{
 	removeBtn=new JButton("delete");
 	updBtn=new JButton("update");
 	sortBtn=new JButton("sort");
-	box=new JComboBox<String>(skz);
+	box=new JComboBox<String>(new String []{"521","531","567"})  ;
 	idField=new JTextField(8);
 	nameField=new JTextField(12);
 	FirstnameField=new JTextField(12);
