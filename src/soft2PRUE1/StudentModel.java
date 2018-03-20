@@ -20,7 +20,7 @@ public class StudentModel implements TableModel {
 
 	public StudentModel() {
 		students = new ArrayList<StudentGrades>();
-		TableColumn column= this.getColumn("ID"); 
+		//TableColumn column= this.getColumn("ID"); 
 	}
 
 	@Override
