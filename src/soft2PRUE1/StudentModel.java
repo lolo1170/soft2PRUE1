@@ -14,7 +14,8 @@ import javax.swing.table.TableModel;
 public class StudentModel implements TableModel {
 
 	private final static int COLCOUNT = 13;
-	private static  String[] colnames= {"ID","NAME","FIRSTNAME","SKZ","MAIL","UE1","UE2","UE3","UE4","UE5","UE5","SUM","GRADE"};
+	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", "UE1", "UE2", "UE3", "UE4", "UE5",
+			"UE5", "SUM", "GRADE" };
 
 	private List<StudentGrades> students;
 	private HashSet<TableModelListener> listeners;
@@ -37,25 +38,23 @@ public class StudentModel implements TableModel {
 	 */
 	@Override
 	public Class<?> getColumnClass(int index) {
-
-
+		
 		if (checkIndex(index)) {
 
 			if (index <= 4) {
 				return new String().getClass();
-		
-			} 
-			 else if(index>4&&index<=11) {
+
+			} else if (index > 4 && index <= 11) {
 
 				return students.get(0).getPoints().getClass();
-			}else if(index==12){
-				
+			} else if (index == 12) {
+
 				return new Integer(12).getClass();
-				
-			}else{
-				
-				return new StudentGrades(null, null, null, null, null).getGrade().getClass();//students.get(0).getGrade().getClass();
-				
+
+			} else {
+
+				return null;//new StudentGrades(null, null, null, null, null).getGrade().getClass();// students.get(0).getGrade().getClass();
+
 			}
 
 		}
@@ -71,13 +70,12 @@ public class StudentModel implements TableModel {
 	@Override
 	public String getColumnName(int columnIndex) {
 		if (checkIndex(columnIndex)) {
-			System.out.println(colnames[columnIndex]);
 			return colnames[columnIndex];
-		
+
 		}
-		
+
 		return null;
-	
+
 	}
 
 	@Override
@@ -87,11 +85,12 @@ public class StudentModel implements TableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
+
 		StudentGrades st = students.get(rowIndex);
-	
-		if (checkIndex(columnIndex)&&students.get(rowIndex)!=null) {
-		switch(columnIndex){	
-		case 0:
+
+		if (checkIndex(columnIndex)) {
+			switch (columnIndex) {
+			case 0:
 				return st.getId();
 			case 1:
 				return st.getName();
@@ -113,19 +112,24 @@ public class StudentModel implements TableModel {
 				return st.getPoints()[4];
 			case 10:
 				return st.getPoints()[5];
-				
-			case 11:return st.sumPoints;
-			case 12:return st.getGrade();
-		}
+
+			case 11:
+				return st.sumPoints;
+			case 12:
+				return st.getGrade();
 			}
+		}
 		return null;
 	}
-
-	
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 
+		if (columnIndex==COLCOUNT-1) {
+			//12 is the Frade, it shoudl bbe edite by the program and not by user
+			return false;
+		}
+		
 		// TODO look all cells are editable, Edin thinks SKZ and points
 		return true;
 	}
@@ -145,6 +149,7 @@ public class StudentModel implements TableModel {
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
 		StudentGrades st = students.get(rowIndex);
+		
 		if (checkIndex(columnIndex)) {
 
 			switch (columnIndex) {
@@ -185,12 +190,11 @@ public class StudentModel implements TableModel {
 			}
 		}
 	}
-	
+
 	public void add(StudentGrades st) {
 		students.add(st);
 
 	}
-
 
 	private boolean checkIndex(int index) {
 		if (0 >= index || index <= COLCOUNT) {
