@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableCellRenderer;
 
-public class TableFrame extends JFrame implements TableCellRenderer{
+public class TableFrame extends JFrame{
 	
 	private int height=600,width=1200;
 	private static String[]skz= {"521","520","543"};
@@ -49,16 +49,11 @@ public class TableFrame extends JFrame implements TableCellRenderer{
 	northPnl.add(removeBtn);
 	northPnl.add(sortBtn);
 	JTable jtable=new JTable(model);
-	jtable.setDefaultRenderer(model.getColumnClass(0), );
+	//jtable.setDefaultRenderer(model.getColumnClass(0), );
 	this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
 	this.setVisible(true);
 	}
 
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }
