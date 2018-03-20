@@ -14,8 +14,7 @@ import javax.swing.table.TableModel;
 public class StudentModel implements TableModel {
 
 	private final static int COLCOUNT = 13;
-	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", "UE1", "UE2", "UE3", "UE4", "UE5",
-			"UE5", "SUM", "GRADE" };
+	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", "UE1", "UE2", "UE3", "UE4", "UE5","UE5", "SUM", "GRADE" };
 
 	private List<StudentGrades> students;
 	private HashSet<TableModelListener> listeners;
@@ -46,16 +45,15 @@ public class StudentModel implements TableModel {
 
 			} else if (index > 4 && index <= 11) {
 
-				return students.get(0).getPoints().getClass();
+				return new Integer(0).getClass();
+			
 			} else if (index == 12) {
 
-				return new Integer(12).getClass();
+				return new StudentGrades(null, null, null, null, null).getGrade().getClass();// students.get(0).getGrade().getClass();;
 
-			} else {
+			} 
 
-				return null;//new StudentGrades(null, null, null, null, null).getGrade().getClass();// students.get(0).getGrade().getClass();
-
-			}
+	
 
 		}
 		return null;
@@ -69,13 +67,7 @@ public class StudentModel implements TableModel {
 
 	@Override
 	public String getColumnName(int columnIndex) {
-		if (checkIndex(columnIndex)) {
 			return colnames[columnIndex];
-
-		}
-
-		return null;
-
 	}
 
 	@Override

@@ -22,11 +22,12 @@ public class mainTable {
 		
 	JTable tb=new JTable(m);
 	JFrame jf=new JFrame();
+	/*
 	JPanel jp=new JPanel();
 	jp.add(new JButton("add"));
 	jf.getContentPane().add(jp,BorderLayout.NORTH);
-	
-	jf.add(tb);
+	*/
+	jf.getContentPane().add(new JScrollPane(tb), BorderLayout.CENTER);
 	jf.setVisible(true);
 	jf.setSize(500, 600);
 	
