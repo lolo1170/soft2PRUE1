@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -15,12 +16,12 @@ public class StudentModel implements TableModel {
 	private final static int COLCOUNT = 13;
 	private static  String[] colnames= {"ID","NAME","FIRSTNAME","SKZ","MAIL","UE1","UE2","UE3","UE4","UE5","UE5","SUM","GRADE"};
 
-	private List<StudentGrades> students = new ArrayList<StudentGrades>();
-	private HashSet<TableModelListener> listeners = new HashSet<TableModelListener>();
+	private List<StudentGrades> students;
+	private HashSet<TableModelListener> listeners;
 
 	public StudentModel() {
 		students = new ArrayList<StudentGrades>();
-		//TableColumn column= this.getColumn("ID"); 
+		listeners = new HashSet<TableModelListener>();
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class StudentModel implements TableModel {
 				
 			}else{
 				
-				return null;//students.get(0).getGrade().getClass();
+				return new StudentGrades(null, null, null, null, null).getGrade().getClass();//students.get(0).getGrade().getClass();
 				
 			}
 
@@ -70,43 +71,13 @@ public class StudentModel implements TableModel {
 	@Override
 	public String getColumnName(int columnIndex) {
 		if (checkIndex(columnIndex)) {
+			System.out.println(colnames[columnIndex]);
 			return colnames[columnIndex];
 		
 		}
 		
 		return null;
 	
-		
-		/*
-		if (checkIndex(columnIndex)) {
-
-			switch (columnIndex) {
-			case 0:
-			return "id";
-			case 1:
-				return "name";
-			case 2:
-				return "firstname";
-			case 3:
-				return "skz";
-			case 4:
-				return "mail";
-			case 6:
-				return "UE1";
-			case 7:
-				return "UE2";
-			case 8:
-				return "UE3";
-			case 9:
-				return "UE4";
-			case 10:
-				return "UE5";
-			case 11:
-				return "UE6";
-			}
-		}
-		*/
-		
 	}
 
 	@Override
@@ -116,12 +87,11 @@ public class StudentModel implements TableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-
 		StudentGrades st = students.get(rowIndex);
-		if (checkIndex(columnIndex)) {
-
-			switch (columnIndex) {
-			case 0:
+	
+		if (checkIndex(columnIndex)&&students.get(rowIndex)!=null) {
+		switch(columnIndex){	
+		case 0:
 				return st.getId();
 			case 1:
 				return st.getName();
@@ -146,12 +116,12 @@ public class StudentModel implements TableModel {
 				
 			case 11:return st.sumPoints;
 			case 12:return st.getGrade();
-
-			}
 		}
-
+			}
 		return null;
 	}
+
+	
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {

@@ -1,6 +1,8 @@
 package soft2PRUE1;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -9,28 +11,68 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
 public class TableFrame extends JFrame{
 	
-	private int height=600,width=1200;
-	private static String[]skz= {"521","520","543"};
-	private static JPanel northPnl = new JPanel();
+	private static final int height=600,width=1200;
+	
+	private StudentModel model;
+	
+	private 	JTable jtable;
+
+	private static JPanel northPnl ;
+	
 	private static JButton addBtn;
 	private static JButton removeBtn;
 	private static JButton updBtn;
 	private static JButton sortBtn;
+	
+	
 	private static JTextField idField;
 	private static JTextField nameField;
 	private static JTextField FirstnameField;
-	private static JComboBox <String>box;
 	private static JTextField mail;
+
+	private static JComboBox <String>box;
 	
 	public TableFrame(StudentModel model) {
+		
+		this.model=model;
+	init();
 	
+	addBtn.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("added");
+			
+			String id=idField.getText();
+			String name=nameField.getText();
+			String firstName=FirstnameField.getText();
+			String mailAdress=mail.getText();
+			String skz=(String)box.getSelectedItem();
+			
+			StudentGrades st=new StudentGrades(id, name, firstName, skz, mailAdress);
+			model.add(st);
+			jtable.repaint();
+			
+	
+		}
+	});
+
+
+	}
+	
+	private void init(){
+		this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
 		this.setTitle("PSW2-Results");
 	this.setSize(width, height);
+	northPnl= new JPanel();
 	this.getContentPane().add(northPnl, BorderLayout.NORTH);
+
 	addBtn=new JButton("add");
 	removeBtn=new JButton("delete");
 	updBtn=new JButton("update");
@@ -48,12 +90,11 @@ public class TableFrame extends JFrame{
 	northPnl.add(addBtn);
 	northPnl.add(removeBtn);
 	northPnl.add(sortBtn);
-	JTable jtable=new JTable(model);
-	//jtable.setDefaultRenderer(model.getColumnClass(0), );
-	this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
+	jtable=new JTable(model);
 	this.setVisible(true);
+	this.add(jtable);
 	}
-
-
-
+			
+			
+	
 }

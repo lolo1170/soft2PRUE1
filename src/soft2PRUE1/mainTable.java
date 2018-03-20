@@ -21,8 +21,8 @@ public class mainTable {
 	
 		
 
-		model.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
-		model.add(new StudentGrades("28", "Hari", "pickl","521", "hari.pickl@gmail.com"));
+		//model.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
+		//model.add(new StudentGrades("28", "Hari", "pickl","521", "hari.pickl@gmail.com"));
 
 	}
 

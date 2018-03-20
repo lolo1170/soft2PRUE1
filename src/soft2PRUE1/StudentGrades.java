@@ -10,7 +10,7 @@ public class StudentGrades {
 	private int[]points=new int[6];
 	Grades grade=Grades.Nicht_Genügend;
 	
-	private enum Grades{
+	enum Grades{
 		Sehr_Gut,Gut,Befriedingend,Genügend,Nicht_Genügend;
 	}
 	
