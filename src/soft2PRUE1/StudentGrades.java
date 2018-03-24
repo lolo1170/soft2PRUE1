@@ -77,14 +77,34 @@ public class StudentGrades {
 	}
 
 	public void calcPoints(){
-		
-		for (int i = 0; i < points.length; i++) {
-			
-			if (points[i]!=-1) {
-				sumPoints+=points[i];
+			int sum =0;
+		for (int i = 0; i < points.length; i++) 
+		{
+
+			if (points[i]!=-1)
+			{
+				if (points[i]<16) 
+				{
+					setGrade(Grades.Nicht_Genügend);
+					//return ;
+				}
+				sum+=points[i];
 			}
 			
 		}
+		
+		if (sum<144) {
+			setGrade(Grades.Nicht_Genügend);
+		}else if(sum>=144&&sumPoints<168){
+			setGrade(Grades.Genügend);
+		}else if(sum>=168&&sumPoints<192){
+			setGrade(Grades.Befriedingend);
+		}else if(sum>=192&&sumPoints<216){
+			setGrade(Grades.Gut);
+		}else{
+			setGrade(Grades.Sehr_Gut);
+		}
+		sumPoints=sum;
 		
 	}
 	

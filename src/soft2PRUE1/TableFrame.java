@@ -54,17 +54,12 @@ public class TableFrame extends JFrame {
 		northPnl = new JPanel();
 		this.getContentPane().add(northPnl, BorderLayout.NORTH);
 		
+		initJBoxes();
 
 		addBtn = new JButton("add");
 		removeBtn = new JButton("delete");
 		sortBtn = new JButton("sort");
-		
-		skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
-		
-		Integer[] pointarr=new Integer[60];
-		for (int i = 0; i < 60; i++) {pointarr[i]=new Integer(i+1);}
-		pointsBox=new JComboBox<>(pointarr);
-		
+
 		idField = new JTextField(8);
 		nameField = new JTextField(12);
 		FirstnameField = new JTextField(12);
@@ -80,23 +75,33 @@ public class TableFrame extends JFrame {
 		northPnl.add(sortBtn);
 		jtable = new JTable(model);
 		//jtable.setSize(width, height);
-		
+		jtable.getColumn("GRADE").setCellRenderer(new TableCellRenderer() {
+			
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+					int row, int column) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
 		this.setVisible(true);
 		this.add(jtable);
+		
+		
 		DefaultCellEditor cellEditor=new DefaultCellEditor(pointsBox);
 		for (int i = 0; i < 6; i++) {
 			jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
 		}
-	
 		cellEditor.addCellEditorListener(new CellEditorListener() {
 			
 			@Override
 			public void editingStopped(ChangeEvent e) {
 				// TODO Auto-generated method stub
 				int row =jtable.getSelectedRow();
-				
 				model.calcPoints(row);
-			}
+				jtable.repaint();
+				
+				}
 			
 			@Override
 			public void editingCanceled(ChangeEvent e) {
@@ -107,9 +112,10 @@ public class TableFrame extends JFrame {
 		
 		TableColumn col=jtable.getColumnModel().getColumn(6);
 		col.setCellEditor(new DefaultCellEditor(pointsBox));
-
 		this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
 		
+		col=jtable.getColumn("GRADE");
+		col.setCellRenderer(new ColorCellRenderer());
 		
 
 		addBtn.addActionListener(new ActionListener() {
@@ -151,6 +157,18 @@ public class TableFrame extends JFrame {
 		});
 		
 	
+		
+	}
+	private void initJBoxes(){
+skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
+		Integer[] pointarr=new Integer[60];
+		for (int i = 0; i < 60; i++) {pointarr[i]=new Integer(i+1);}
+		pointsBox=new JComboBox<>(pointarr);
+		
+		idField = new JTextField(8);
+		nameField = new JTextField(12);
+		FirstnameField = new JTextField(12);
+		mail = new JTextField(20);
 		
 	}
 

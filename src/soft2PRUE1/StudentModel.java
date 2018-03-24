@@ -58,13 +58,8 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 				return new Integer(0).getClass();
 			
 			} else if (index == 12) {
-
 				return new StudentGrades(null, null, null, null, null).getGrade().getClass();// students.get(0).getGrade().getClass();;
-
 			} 
-
-	
-
 		}
 		return null;
 	}
@@ -127,11 +122,10 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 
-		if (columnIndex==COLCOUNT-1) {
+		if (columnIndex==COLCOUNT-1&&columnIndex==COLCOUNT-2) {
 			//12 is the Grade, it shoudl bbe edite by the program and not by user
 			return false;
 		}
-		
 		// TODO look all cells are editable, Edin thinks SKZ and points
 		return true;
 	}
@@ -155,37 +149,37 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 			fireTableDataChanged();
 			switch (columnIndex) {
 			case 0:fireTableDataChanged();
-				st.setId((String) aValue);
+				st.setId((String) aValue);fireTableCellUpdated(rowIndex, 0);
 				return;
-			case 1:fireTableDataChanged();
+			case 1:fireTableDataChanged();fireTableCellUpdated(rowIndex, 1);
 				st.setName((String) aValue);
 				return;
 			case 2:
-				st.setFirstName((String) aValue);fireTableDataChanged();
+				st.setFirstName((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 2);
 				return;
 			case 3:
-				st.setSkz((String) aValue);fireTableDataChanged();
+				st.setSkz((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 3);
 				return;
 			case 4:
-				st.setMail((String) aValue);fireTableDataChanged();
+				st.setMail((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 4);
 				return;
 			case 5:
-				st.getPoints()[0] = (int) aValue;fireTableDataChanged();
+				st.getPoints()[0] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 5);
 				return;
 			case 6:
-				st.getPoints()[1] = (int) aValue;fireTableDataChanged();
+				st.getPoints()[1] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 6);
 				return;
 			case 7:
-				st.getPoints()[2] = (int) aValue;fireTableDataChanged();
+				st.getPoints()[2] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 7);
 				return;
 			case 8:
-				st.getPoints()[3] = (int) aValue;fireTableDataChanged();
+				st.getPoints()[3] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 8);
 				return;
 			case 9:
-				st.getPoints()[4] = (int) aValue;fireTableDataChanged();
+				st.getPoints()[4] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 9);
 				return;
 			case 10:
-				st.getPoints()[5] = (int) aValue;fireTableDataChanged();
+				st.getPoints()[5] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 10);
 				return;
 
 			}
