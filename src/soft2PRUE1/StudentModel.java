@@ -8,13 +8,18 @@ import java.util.List;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-public class StudentModel implements TableModel {
+public class StudentModel extends AbstractTableModel implements TableModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final static int COLCOUNT = 13;
-	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", "UE1", "UE2", "UE3", "UE4", "UE5","UE5", "SUM", "GRADE" };
+	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", "UE1", "UE2", "UE3", "UE4", "UE5","UE6", "SUM", "GRADE" };
 
 	private List<StudentGrades> students;
 	private HashSet<TableModelListener> listeners;
@@ -28,7 +33,12 @@ public class StudentModel implements TableModel {
 	public void addTableModelListener(TableModelListener l) {
 		listeners.add(l);
 	}
-
+	public void delete(int row){
+		
+		students.remove(row);
+		fireTableRowsDeleted(0, 0);
+		
+	}
 	/*
 	 * 
 	 * (non-Javadoc)
@@ -118,7 +128,7 @@ public class StudentModel implements TableModel {
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 
 		if (columnIndex==COLCOUNT-1) {
-			//12 is the Frade, it shoudl bbe edite by the program and not by user
+			//12 is the Grade, it shoudl bbe edite by the program and not by user
 			return false;
 		}
 		
@@ -128,7 +138,6 @@ public class StudentModel implements TableModel {
 
 	@Override
 	public void removeTableModelListener(TableModelListener l) {
-
 		listeners.remove(l);
 	}
 
@@ -143,40 +152,40 @@ public class StudentModel implements TableModel {
 		StudentGrades st = students.get(rowIndex);
 		
 		if (checkIndex(columnIndex)) {
-
+			fireTableDataChanged();
 			switch (columnIndex) {
-			case 0:
+			case 0:fireTableDataChanged();
 				st.setId((String) aValue);
 				return;
-			case 1:
+			case 1:fireTableDataChanged();
 				st.setName((String) aValue);
 				return;
 			case 2:
-				st.setFirstName((String) aValue);
+				st.setFirstName((String) aValue);fireTableDataChanged();
 				return;
 			case 3:
-				st.setSkz((String) aValue);
+				st.setSkz((String) aValue);fireTableDataChanged();
 				return;
 			case 4:
-				st.setMail((String) aValue);
+				st.setMail((String) aValue);fireTableDataChanged();
+				return;
+			case 5:
+				st.getPoints()[0] = (int) aValue;fireTableDataChanged();
 				return;
 			case 6:
-				st.getPoints()[0] = (int) aValue;
+				st.getPoints()[1] = (int) aValue;fireTableDataChanged();
 				return;
 			case 7:
-				st.getPoints()[1] = (int) aValue;
+				st.getPoints()[2] = (int) aValue;fireTableDataChanged();
 				return;
 			case 8:
-				st.getPoints()[2] = (int) aValue;
+				st.getPoints()[3] = (int) aValue;fireTableDataChanged();
 				return;
 			case 9:
-				st.getPoints()[3] = (int) aValue;
+				st.getPoints()[4] = (int) aValue;fireTableDataChanged();
 				return;
 			case 10:
-				st.getPoints()[4] = (int) aValue;
-				return;
-			case 11:
-				st.getPoints()[6] = (int) aValue;
+				st.getPoints()[5] = (int) aValue;fireTableDataChanged();
 				return;
 
 			}
@@ -185,6 +194,7 @@ public class StudentModel implements TableModel {
 
 	public void add(StudentGrades st) {
 		students.add(st);
+		fireTableRowsInserted(this.getRowCount(), this.getRowCount());
 
 	}
 
@@ -193,5 +203,15 @@ public class StudentModel implements TableModel {
 			return true;
 		}
 		return false;
+	}
+	public void calcPoints(int row){
+		if (row>students.size()) {
+			return;
+		}
+		StudentGrades st=students.get(row);
+		st.calcPoints();
+		fireTableCellUpdated(row, COLCOUNT-2);
+		fireTableDataChanged();
+		
 	}
 }

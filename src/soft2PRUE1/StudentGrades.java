@@ -8,6 +8,8 @@ public class StudentGrades {
 	private String skz;
 	private String mail;
 	private int[]points=new int[6];
+	
+	int sumPoints=0;
 	Grades grade=Grades.Nicht_Genügend;
 	
 	enum Grades{
@@ -15,9 +17,7 @@ public class StudentGrades {
 	}
 	
 	
-	
-	int sumPoints=0;
-	
+
 	public StudentGrades(String id,String name,String firstName,String skz,String mail) {
 		this.name=name;
 		this.id=id;
@@ -80,7 +80,9 @@ public class StudentGrades {
 		
 		for (int i = 0; i < points.length; i++) {
 			
-			sumPoints+=points[i];
+			if (points[i]!=-1) {
+				sumPoints+=points[i];
+			}
 			
 		}
 		
