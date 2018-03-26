@@ -2,10 +2,12 @@ package soft2PRUE1;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EventObject;
 
+import javax.jws.Oneway;
 import javax.swing.CellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -46,6 +48,7 @@ public class TableFrame extends JFrame {
 	public TableFrame(StudentModel model) {
 		this.model = model;
 		init();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	private void init() {
@@ -74,16 +77,7 @@ public class TableFrame extends JFrame {
 		northPnl.add(removeBtn);
 		northPnl.add(sortBtn);
 		jtable = new JTable(model);
-		//jtable.setSize(width, height);
-		jtable.getColumn("GRADE").setCellRenderer(new TableCellRenderer() {
-			
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-					int row, int column) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		});
+		jtable.setSize(width, height);
 		this.setVisible(true);
 		this.add(jtable);
 		
@@ -99,6 +93,7 @@ public class TableFrame extends JFrame {
 				// TODO Auto-generated method stub
 				int row =jtable.getSelectedRow();
 				model.calcPoints(row);
+				model.fireTableDataChanged();
 				jtable.repaint();
 				
 				}
@@ -106,7 +101,6 @@ public class TableFrame extends JFrame {
 			@Override
 			public void editingCanceled(ChangeEvent e) {
 				// TODO Auto-generated method stub
-				
 			}
 		});
 		
@@ -134,6 +128,7 @@ public class TableFrame extends JFrame {
 					if (id.isEmpty() || name.isEmpty() || firstName.isEmpty() || skz.isEmpty()) {return;}
 					
 					StudentGrades st = new StudentGrades(id, name, firstName, skz, mailAdress);
+					model.add(st);
 					model.fireTableChanged(new TableModelEvent(model, model.getRowCount()-1));
 					jtable.repaint();
 					jtable.getRootPane().repaint();
@@ -146,10 +141,15 @@ public class TableFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource()==removeBtn) {
-					int deletedRow=jtable.getSelectedRow();
-					model.delete(deletedRow);
-					model.fireTableRowsDeleted(deletedRow, deletedRow);
+					int []rows=jtable.getSelectedRows();
+					for (int i = 0; i < rows.length; i++) {
+						System.out.println(rows[i]);
+						model.delete(rows[i]);
+					}
+					
+					model.fireTableRowsDeleted(rows[0], rows[rows.length-1]);
 					jtable.repaint();
+					repaint();
 					
 					
 				}

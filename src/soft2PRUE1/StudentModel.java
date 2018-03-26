@@ -34,7 +34,9 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 		listeners.add(l);
 	}
 	public void delete(int row){
-		
+		if (row<0||row>=students.size()-1) {
+			return;
+		}
 		students.remove(row);
 		fireTableRowsDeleted(0, 0);
 		

@@ -3,18 +3,16 @@ package soft2PRUE1;
 public class StudentGrades {
 
 	private String id;
-	private	String name;
+	private String name;
 	private String firstName;
 	private String skz;
 	private String mail;
-	private int[]points=new int[6];
+	private int[]points = new int[6];
 	
 	int sumPoints=0;
-	Grades grade=Grades.Nicht_Genügend;
+	Grades grade=Grades.undefined;
 	
-	enum Grades{
-		Sehr_Gut,Gut,Befriedingend,Genügend,Nicht_Genügend;
-	}
+	enum Grades{Sehr_Gut,Gut,Befriedingend,Genügend,Nicht_Genügend,undefined;}
 	
 	
 
@@ -27,7 +25,6 @@ public class StudentGrades {
 		for (int i = 0; i < points.length; i++) {
 			points[i]=-1;
 		}
-		
 	}
 	
 	public Grades getGrade() {
@@ -40,6 +37,9 @@ public class StudentGrades {
 
 	public void addpointsAtIndex(int index,int achievedPoints) {
 		//ToDo check if right index
+		if (index<0||index>5) {
+			return;
+		}
 		points[index]=achievedPoints;
 		
 		
@@ -70,29 +70,37 @@ public class StudentGrades {
 			return false;
 			
 		}
-		
-		
-	
 	return true;
 	}
 
 	public void calcPoints(){
 			int sum =0;
+			boolean notAllSubmited=false;
+			boolean oneUnder16=false;
 		for (int i = 0; i < points.length; i++) 
 		{
-
+			if (points[i]==-1) {
+				notAllSubmited=true;
+			}
 			if (points[i]!=-1)
 			{
 				if (points[i]<16) 
 				{
-					setGrade(Grades.Nicht_Genügend);
-					//return ;
+					oneUnder16=true;
 				}
 				sum+=points[i];
 			}
 			
 		}
 		
+		if (notAllSubmited) {
+			setGrade(Grades.undefined);
+			return;
+		}else if(oneUnder16){
+			setGrade(Grades.Nicht_Genügend);
+			return;
+		}
+		sumPoints=sum;
 		if (sum<144) {
 			setGrade(Grades.Nicht_Genügend);
 		}else if(sum>=144&&sumPoints<168){
@@ -104,7 +112,6 @@ public class StudentGrades {
 		}else{
 			setGrade(Grades.Sehr_Gut);
 		}
-		sumPoints=sum;
 		
 	}
 	
