@@ -92,7 +92,7 @@ public class StudentGrades {
 			}
 			
 		}
-		
+		sumPoints=sum;
 		if (notAllSubmited) {
 			setGrade(Grades.undefined);
 			return;
@@ -100,7 +100,6 @@ public class StudentGrades {
 			setGrade(Grades.Nicht_Genügend);
 			return;
 		}
-		sumPoints=sum;
 		if (sum<144) {
 			setGrade(Grades.Nicht_Genügend);
 		}else if(sum>=144&&sumPoints<168){

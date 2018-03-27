@@ -83,6 +83,7 @@ public class TableFrame extends JFrame {
 		
 		
 		DefaultCellEditor cellEditor=new DefaultCellEditor(pointsBox);
+	
 		for (int i = 0; i < 6; i++) {
 			jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
 		}
@@ -100,7 +101,6 @@ public class TableFrame extends JFrame {
 			
 			@Override
 			public void editingCanceled(ChangeEvent e) {
-				// TODO Auto-generated method stub
 			}
 		});
 		

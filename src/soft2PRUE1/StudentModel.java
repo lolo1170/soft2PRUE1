@@ -39,7 +39,6 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 		}
 		students.remove(row);
 		fireTableRowsDeleted(0, 0);
-		
 	}
 	/*
 	 * 
@@ -124,7 +123,7 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 
-		if (columnIndex==COLCOUNT-1&&columnIndex==COLCOUNT-2) {
+		if (columnIndex==COLCOUNT-1||columnIndex==COLCOUNT-2) {
 			//12 is the Grade, it shoudl bbe edite by the program and not by user
 			return false;
 		}
@@ -183,6 +182,8 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 			case 10:
 				st.getPoints()[5] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 10);
 				return;
+			case 11:st.calcPoints();st.setSumPoints((int)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 11);return;
+			case 12:st.setGrade((StudentGrades.Grades)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 12);
 
 			}
 		}
