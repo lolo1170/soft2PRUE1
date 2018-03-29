@@ -8,6 +8,7 @@ import java.awt.TextField;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import soft2PRUE1.StudentGrades.Grades;
@@ -16,8 +17,10 @@ import soft2PRUE1.StudentGrades.Grades;
 public class ColorCellRenderer extends JPanel implements TableCellRenderer{
 
 	JTextField text;
+	JPanel panel;
 	public ColorCellRenderer(){
 		text=new JTextField("-");
+		panel=new JPanel();
 		this.add(text);
 		
 	}
@@ -27,23 +30,33 @@ public class ColorCellRenderer extends JPanel implements TableCellRenderer{
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row, int column) {
 		//TODO if selected row is grade,here he selects all 	
-		if (isSelected&&table.getSelectedColumn()==table.getModel().getColumnCount()-1) {
+		//super.getTableCellRendererComponent(table, value,  isSelected,  hasFocus,row, column);
+		if (hasFocus) {
 			Object grade=	(StudentGrades.Grades)	table.getModel().getValueAt(table.getSelectedRow(), table.getModel().getColumnCount()-1);
 		
-			if (grade==Grades.undefined) {
-				this.setBackground(Color.gray);
-				this.setVisible(true);
+			if (grade==Grades.undefined) 
+			{
+				table.getModel().setValueAt(grade, row, table.getColumnModel().getColumnIndex("GRADE"));
+					this.setBackground(Color.gray);
+			//	this.setVisible(true);
 				return this;
 			}
 			
-			if (grade==StudentGrades.Grades.Nicht_Genügend) {
+			else if (grade==StudentGrades.Grades.Nicht_Genügend)
+			{
 				this.setBackground(Color.RED);
 				text.setText(grade.toString());
-				table.setValueAt(StudentGrades.Grades.Genügend, row, column);
+				panel.add(text);
+				
+				table.setValueAt(StudentGrades.Grades.Nicht_Genügend, row, column);
+				return this;
 			
 			}else{
+				
 				text.setText(grade.toString());
+				panel.add(text);
 				this.setBackground(Color.GREEN);
+				return this;
 			}
 		}
 		

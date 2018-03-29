@@ -169,7 +169,5 @@ public class StudentGrades {
 	public void setSumPoints(int sumPoints) {
 		this.sumPoints = sumPoints;
 	}
-
-	
 	
 }

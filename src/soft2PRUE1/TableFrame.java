@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Comparator;
 import java.util.EventObject;
 
 import javax.jws.Oneway;
@@ -23,8 +24,14 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 public class TableFrame extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final int height = 600, width = 1000;
 
@@ -57,8 +64,7 @@ public class TableFrame extends JFrame {
 		northPnl = new JPanel();
 		this.getContentPane().add(northPnl, BorderLayout.NORTH);
 		
-		initJBoxes();
-
+	
 		addBtn = new JButton("add");
 		removeBtn = new JButton("delete");
 		sortBtn = new JButton("sort");
@@ -68,48 +74,30 @@ public class TableFrame extends JFrame {
 		FirstnameField = new JTextField(12);
 		mail = new JTextField(20);
 		
+		jtable = new JTable(model);
+		jtable.setSize(width, height);
 		northPnl.add(idField);
 		northPnl.add(nameField);
+		initJBoxes();
 		northPnl.add(FirstnameField);
 		northPnl.add(skzBox);
 		northPnl.add(mail);
 		northPnl.add(addBtn);
 		northPnl.add(removeBtn);
 		northPnl.add(sortBtn);
-		jtable = new JTable(model);
-		jtable.setSize(width, height);
+	
 		this.setVisible(true);
 		this.add(jtable);
 		
 		
-		DefaultCellEditor cellEditor=new DefaultCellEditor(pointsBox);
 	
-		for (int i = 0; i < 6; i++) {
-			jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
-		}
-		cellEditor.addCellEditorListener(new CellEditorListener() {
-			
-			@Override
-			public void editingStopped(ChangeEvent e) {
-				// TODO Auto-generated method stub
-				int row =jtable.getSelectedRow();
-				model.calcPoints(row);
-				model.fireTableDataChanged();
-				jtable.repaint();
-				
-				}
-			
-			@Override
-			public void editingCanceled(ChangeEvent e) {
-			}
-		});
+	
+
 		
-		TableColumn col=jtable.getColumnModel().getColumn(6);
-		col.setCellEditor(new DefaultCellEditor(pointsBox));
-		this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
+		initRenderesEditors();
 		
-		col=jtable.getColumn("GRADE");
-		col.setCellRenderer(new ColorCellRenderer());
+		
+	
 		
 
 		addBtn.addActionListener(new ActionListener() {
@@ -125,50 +113,96 @@ public class TableFrame extends JFrame {
 					String mailAdress = mail.getText();
 					String skz = (String) skzBox.getSelectedItem();
 					model.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
+					model.add(new StudentGrades("28","Hari","Pickl","521","harald.pickl@gmx.at"));
+				model.add(new StudentGrades("28","Alois","Huch","521","@"));
+					
 					if (id.isEmpty() || name.isEmpty() || firstName.isEmpty() || skz.isEmpty()) {return;}
 					
 					StudentGrades st = new StudentGrades(id, name, firstName, skz, mailAdress);
 					model.add(st);
-					model.fireTableChanged(new TableModelEvent(model, model.getRowCount()-1));
+					
+					model.fireTableStructureChanged();
+					model.fireTableDataChanged();
+					model.fireTableRowsUpdated(0, model.getRowCount());
 					jtable.repaint();
-					jtable.getRootPane().repaint();
+					
+					
 				}
-			}
+				}
 		});
 
 		removeBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource()==removeBtn) {
 					int []rows=jtable.getSelectedRows();
 					for (int i = 0; i < rows.length; i++) {
 						System.out.println(rows[i]);
+						model.fireTableRowsDeleted(rows[i]-1, rows[i]);
 						model.delete(rows[i]);
 					}
-					
 					model.fireTableRowsDeleted(rows[0], rows[rows.length-1]);
 					jtable.repaint();
 					repaint();
-					
-					
-				}
 			}
 		});
 		
+		sortBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				model.sort();
+				model.fireTableStructureChanged();
+				model.fireTableDataChanged();
+				model.fireTableRowsUpdated(0, model.getRowCount());
+				jtable.repaint();
+				
+			}
+		});
 	
 		
 	}
-	private void initJBoxes(){
-skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
-		Integer[] pointarr=new Integer[60];
-		for (int i = 0; i < 60; i++) {pointarr[i]=new Integer(i+1);}
-		pointsBox=new JComboBox<>(pointarr);
+	private void initRenderesEditors(){
+		TableColumn col=jtable.getColumnModel().getColumn(6);
+		col.setCellEditor(new DefaultCellEditor(pointsBox));
+		this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
+		col=jtable.getColumn("GRADE");
+		col.setCellRenderer(new ColorCellRenderer());
 		
-		idField = new JTextField(8);
-		nameField = new JTextField(12);
-		FirstnameField = new JTextField(12);
-		mail = new JTextField(20);
+		DefaultCellEditor cellEditor=new DefaultCellEditor(pointsBox);
+		
+		for (int i = 0; i < 6; i++) {
+			jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
+		}
+		cellEditor.addCellEditorListener(new CellEditorListener() {
+			
+			@Override
+			public void editingStopped(ChangeEvent e) {
+				// TODO Auto-generated method stub
+				int row =jtable.getSelectedRow();
+				model.calcPoints(row);
+				model.fireTableDataChanged();
+				jtable.repaint();
+				}
+			@Override
+			public void editingCanceled(ChangeEvent e) {
+				
+			}
+		});
+		
+		
+		
+	}
+	private void initJBoxes(){
+		Integer[] pointarr=new Integer[60];
+		
+		skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
+		
+		for (int i = 0; i < 60; i++) {pointarr[i]=new Integer(i+1);}
+		
+		pointsBox=new JComboBox<>(pointarr);
+		//pointsBox.set
+
 		
 	}
 

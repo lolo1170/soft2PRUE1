@@ -1,6 +1,7 @@
 package soft2PRUE1;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -34,11 +35,12 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 		listeners.add(l);
 	}
 	public void delete(int row){
-		if (row<0||row>=students.size()-1) {
+		if (row<0||row>=students.size()) {
 			return;
 		}
 		students.remove(row);
-		fireTableRowsDeleted(0, 0);
+		fireTableRowsDeleted(row, row);
+		
 	}
 	/*
 	 * 
@@ -84,6 +86,7 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 
+			
 		StudentGrades st = students.get(rowIndex);
 
 		if (checkIndex(columnIndex)) {
@@ -110,7 +113,6 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 				return st.getPoints()[4];
 			case 10:
 				return st.getPoints()[5];
-
 			case 11:
 				return st.sumPoints;
 			case 12:
@@ -191,8 +193,10 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 
 	public void add(StudentGrades st) {
 		students.add(st);
-		fireTableRowsInserted(this.getRowCount(), this.getRowCount());
-
+		
+		fireTableRowsInserted(students.size()-1, students.size());
+		fireTableDataChanged();
+		fireTableStructureChanged();
 	}
 
 	private boolean checkIndex(int index) {
@@ -211,4 +215,18 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 		fireTableDataChanged();
 		
 	}
+	
+	public void sort(){
+	fireTableStructureChanged();
+	fireTableRowsUpdated(0, getRowCount());
+	fireTableDataChanged();
+		students.sort(new Comparator<StudentGrades>() {
+
+			@Override
+			public int compare( StudentGrades o1, StudentGrades o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+	}
+	
 }
