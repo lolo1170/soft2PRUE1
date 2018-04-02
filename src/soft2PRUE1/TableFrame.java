@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
@@ -26,15 +27,12 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-public class TableFrame extends JFrame {
+public class TableFrame{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+	 static JFrame frame;
 	private static final int height = 600, width = 1000;
-
+	private static StudentTable studentTable;
+	
 	private StudentModel model;
 	private JTable jtable;
 
@@ -53,17 +51,26 @@ public class TableFrame extends JFrame {
 	private static JComboBox<Integer>pointsBox;
 
 	public TableFrame(StudentModel model) {
+		frame=new JFrame("PSW2-Results");
 		this.model = model;
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		init();
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		SwingUtilities.invokeLater(() -> {
+			frame.pack();
+			frame.setLocation(200, 200);
+			frame.setVisible(true);
+		});
 	}
 
 	private void init() {
-		this.setTitle("PSW2-Results");
-		this.setSize(width, height);
-		northPnl = new JPanel();
-		this.getContentPane().add(northPnl, BorderLayout.NORTH);
 		
+		frame.setSize(width, height);
+		northPnl = new JPanel();
+		frame.getContentPane().add(northPnl, BorderLayout.NORTH);
+		frame.setVisible(true);
+		
+		studentTable=new StudentTable(model);
 	
 		addBtn = new JButton("add");
 		removeBtn = new JButton("delete");
@@ -74,28 +81,29 @@ public class TableFrame extends JFrame {
 		FirstnameField = new JTextField(12);
 		mail = new JTextField(20);
 		
-		jtable = new JTable(model);
-		jtable.setSize(width, height);
+		//jtable = new JTable(model);
+		frame.add(studentTable);
+		//jtable.setSize(width, height);
 		northPnl.add(idField);
 		northPnl.add(nameField);
 		initJBoxes();
+		initRenderesEditors();
 		northPnl.add(FirstnameField);
 		northPnl.add(skzBox);
 		northPnl.add(mail);
 		northPnl.add(addBtn);
 		northPnl.add(removeBtn);
 		northPnl.add(sortBtn);
+		model.addTableModelListener(new  TableModelListener() {
+			
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				e.getFirstRow();
+				System.out.println("Table changed");
+			frame.repaint();
+			}
+		});
 	
-		this.setVisible(true);
-		this.add(jtable);
-		
-		
-	
-	
-
-		
-		initRenderesEditors();
-		
 		
 	
 		
@@ -120,13 +128,6 @@ public class TableFrame extends JFrame {
 					
 					StudentGrades st = new StudentGrades(id, name, firstName, skz, mailAdress);
 					model.add(st);
-					
-					model.fireTableStructureChanged();
-					model.fireTableDataChanged();
-					model.fireTableRowsUpdated(0, model.getRowCount());
-					jtable.repaint();
-					
-					
 				}
 				}
 		});
@@ -135,58 +136,48 @@ public class TableFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					int []rows=jtable.getSelectedRows();
-					for (int i = 0; i < rows.length; i++) {
-						System.out.println(rows[i]);
-						model.fireTableRowsDeleted(rows[i]-1, rows[i]);
+					int []rows=studentTable.getSelectedRows();
+				
+					for (int i = 0; i < rows.length; i++)
+					{
 						model.delete(rows[i]);
 					}
-					model.fireTableRowsDeleted(rows[0], rows[rows.length-1]);
-					jtable.repaint();
-					repaint();
 			}
 		});
-		
 		sortBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
 				model.sort();
-				model.fireTableStructureChanged();
-				model.fireTableDataChanged();
-				model.fireTableRowsUpdated(0, model.getRowCount());
-				jtable.repaint();
 				
 			}
 		});
-	
 		
 	}
 	private void initRenderesEditors(){
-		TableColumn col=jtable.getColumnModel().getColumn(6);
+		TableColumn col=studentTable.getColumnModel().getColumn(6);
 		col.setCellEditor(new DefaultCellEditor(pointsBox));
-		this.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
-		col=jtable.getColumn("GRADE");
+		frame.getContentPane().add(new JScrollPane(studentTable), BorderLayout.CENTER);
+		col=studentTable.getColumn("GRADE");
 		col.setCellRenderer(new ColorCellRenderer());
 		
 		DefaultCellEditor cellEditor=new DefaultCellEditor(pointsBox);
 		
-		for (int i = 0; i < 6; i++) {
-			jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
+		for (int i = 0; i < 6; i++) 
+		{
+			studentTable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
 		}
 		cellEditor.addCellEditorListener(new CellEditorListener() {
 			
 			@Override
 			public void editingStopped(ChangeEvent e) {
 				// TODO Auto-generated method stub
-				int row =jtable.getSelectedRow();
+				int row =studentTable.getSelectedRow();
 				model.calcPoints(row);
-				model.fireTableDataChanged();
-				jtable.repaint();
 				}
 			@Override
 			public void editingCanceled(ChangeEvent e) {
-				
+				cellEditor.stopCellEditing();
 			}
 		});
 		
@@ -202,6 +193,7 @@ public class TableFrame extends JFrame {
 		
 		pointsBox=new JComboBox<>(pointarr);
 		//pointsBox.set
+
 
 		
 	}

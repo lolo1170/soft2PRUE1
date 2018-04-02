@@ -6,40 +6,38 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-public class StudentModel extends AbstractTableModel implements TableModel {
+public class StudentModel extends AbstractTableModel{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private final static int COLCOUNT = 13;
-	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", "UE1", "UE2", "UE3", "UE4", "UE5","UE6", "SUM", "GRADE" };
+	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", 
+																"UE1", "UE2", "UE3", "UE4", "UE5","UE6", "SUM", "GRADE" };
 
 	private List<StudentGrades> students;
-	private HashSet<TableModelListener> listeners;
+	private List<TableModelListener> listeners;
 
 	public StudentModel() {
+		super();
 		students = new ArrayList<StudentGrades>();
-		listeners = new HashSet<TableModelListener>();
+		listeners = new ArrayList<TableModelListener>();
+		
 	}
 
-	@Override
-	public void addTableModelListener(TableModelListener l) {
-		listeners.add(l);
-	}
 	public void delete(int row){
-		if (row<0||row>=students.size()) {
-			return;
-		}
+		
+		if (row<0||row>=students.size()) {return;}
+		
 		students.remove(row);
+		
 		fireTableRowsDeleted(row, row);
+		
 		
 	}
 	/*
@@ -61,7 +59,7 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 				return new Integer(0).getClass();
 			
 			} else if (index == 12) {
-				return new StudentGrades(null, null, null, null, null).getGrade().getClass();// students.get(0).getGrade().getClass();;
+				return new StudentGrades(null, null, null, null, null).getGrade().getClass();
 			} 
 		}
 		return null;
@@ -69,7 +67,6 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 
 	@Override
 	public int getColumnCount() {
-
 		return COLCOUNT;
 	}
 
@@ -86,7 +83,9 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 
-			
+			if (students.size()<=rowIndex||rowIndex<0) {
+				return null;
+			}
 		StudentGrades st = students.get(rowIndex);
 
 		if (checkIndex(columnIndex)) {
@@ -137,14 +136,22 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 	public void removeTableModelListener(TableModelListener l) {
 		listeners.remove(l);
 	}
+	@Override
+	public void addTableModelListener(TableModelListener l) {
+	
+		System.out.println("Listener geadded");
+		listeners.add(l);
+	}
 
 	/**
 	 * Java DOC
 	 * 
 	 */
-
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		if (rowIndex>=students.size()) {
+			return ;
+		}
 
 		StudentGrades st = students.get(rowIndex);
 		
@@ -184,29 +191,32 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 			case 10:
 				st.getPoints()[5] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 10);
 				return;
-			case 11:st.calcPoints();st.setSumPoints((int)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 11);return;
+			case 11:st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 11);
+			return;
 			case 12:st.setGrade((StudentGrades.Grades)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 12);
-
+			return;
 			}
 		}
 	}
 
 	public void add(StudentGrades st) {
+		System.out.println("st added");
 		students.add(st);
+		//fireTableDataChanged();
+	super.	fireTableRowsInserted(students.size()-1, students.size()-1);
 		
-		fireTableRowsInserted(students.size()-1, students.size());
-		fireTableDataChanged();
-		fireTableStructureChanged();
+	
 	}
 
 	private boolean checkIndex(int index) {
-		if (0 >= index || index <= COLCOUNT) {
+		if (0 >= index || index <= COLCOUNT) 
+		{
 			return true;
 		}
 		return false;
 	}
 	public void calcPoints(int row){
-		if (row>students.size()) {
+		if (row>=students.size()) {
 			return;
 		}
 		StudentGrades st=students.get(row);
@@ -217,9 +227,9 @@ public class StudentModel extends AbstractTableModel implements TableModel {
 	}
 	
 	public void sort(){
-	fireTableStructureChanged();
+	//fireTableStructureChanged();
 	fireTableRowsUpdated(0, getRowCount());
-	fireTableDataChanged();
+	//fireTableDataChanged();
 		students.sort(new Comparator<StudentGrades>() {
 
 			@Override

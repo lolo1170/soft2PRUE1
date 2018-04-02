@@ -27,6 +27,28 @@ public class StudentGrades {
 		}
 	}
 	
+	public StudentGrades(String id,String name,String firstName,String skz,String mail,int ue1,int ue2,int ue3,int ue4,int ue5,int ue6,Grades grade){
+		
+		this.name=name;
+		this.id=id;
+		this.firstName=firstName;
+		this.mail=mail;
+		this.skz=skz;
+		points[0]=ue1;
+		points[1]=ue2;
+		points[2]=ue3;
+		points[3]=ue4;
+		points[4]=ue5;
+		points[5]=ue6;
+		for (int i = 0; i < points.length; i++) {
+			sumPoints+=points[i];
+		}
+		
+		this.grade=grade;
+		
+		
+	}
+	
 	public Grades getGrade() {
 		return grade;
 	}
