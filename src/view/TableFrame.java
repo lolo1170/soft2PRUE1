@@ -53,18 +53,20 @@ public class TableFrame {
 
 	private static JComboBox<String> skzBox;
 	private static JComboBox<Integer>pointsBox;
+	
+	private static DefaultCellEditor cellEditor;
 
 	public TableFrame(StudentModel model) {
 		
-		frame=new JFrame("PSW2-Results");
+	
 		this.model = model;
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jtable = new JTable(model);
-		 frame.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
 		
-		 frame.setSize(width, height);
-			
-
+		jtable = new JTable(model);
+		
+		frame=new JFrame("PSW2-Results");
+		frame.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
+		frame.setSize(width, height);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 
 			idField = new JTextField(8);
@@ -72,14 +74,56 @@ public class TableFrame {
 			FirstnameField = new JTextField(12);
 			mail = new JTextField(20);
 			
-			//jtable.setSize(width, height);
+			Integer[] pointarr=new Integer[40];
+			skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
 			
-			initJBoxes();
-			initRenderesEditors();
+			for (int i = 0; i < 40; i++) {pointarr[i]=new Integer(i+1);}
+			pointsBox=new JComboBox<>(pointarr);
 			
-		 
-		 
-		 
+			
+			northPnl=new JPanel();
+			addBtn = new JButton("add");
+			removeBtn = new JButton("delete");
+			sortBtn = new JButton("sort");
+			northPnl = new JPanel();
+			northPnl.add(idField);
+			northPnl.add(nameField);
+			northPnl.add(FirstnameField);
+			northPnl.add(skzBox);
+			northPnl.add(mail);
+			northPnl.add(addBtn);
+			northPnl.add(removeBtn);
+			northPnl.add(sortBtn);
+			frame.getContentPane().add(northPnl, BorderLayout.NORTH);
+			
+			jtable.getColumn("GRADE").setCellRenderer(new ColorCellRenderer());
+			
+			
+			cellEditor=new DefaultCellEditor(pointsBox);
+			int row =jtable.getSelectedRow();
+			System.out.println("gleich unter row"+row);
+			
+			for (int i = 0; i < 6; i++) 
+			{
+				jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
+			}
+			
+			cellEditor.addCellEditorListener(new CellEditorListener() {
+				
+				@Override
+				public void editingStopped(ChangeEvent e) {
+					
+					
+					model.calcPoints(TableFrame.this.jtable.getSelectedRow());
+					}
+				@Override
+				public void editingCanceled(ChangeEvent e) {
+					cellEditor.stopCellEditing();
+				}
+			});
+			
+			
+			
 	
 		init();
 		
@@ -91,9 +135,10 @@ public class TableFrame {
 	}
 
 	private void init() {
-		
-		initNorthPanel();
-	
+		//initJBoxes();
+		//initNorthPanel();
+	//	initRenderesEditors();
+
 		addBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -135,7 +180,6 @@ public class TableFrame {
 		sortBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 				TableFrame.this.model.sort();
 				
 			}
@@ -163,27 +207,26 @@ public class TableFrame {
 		
 	}
 	private void initRenderesEditors(){
-		TableColumn col=jtable.getColumnModel().getColumn(6);
-		col.setCellEditor(new DefaultCellEditor(pointsBox));
-		frame.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
-		col=jtable.getColumn("GRADE");
-		col.setCellRenderer(new ColorCellRenderer());
+
+		jtable.getColumn("GRADE").setCellRenderer(new ColorCellRenderer());
 		
-		PointsEditor p=new PointsEditor(pointsBox);
 		
-		DefaultCellEditor cellEditor=new DefaultCellEditor(pointsBox);
+		cellEditor=new DefaultCellEditor(pointsBox);
+		int row =jtable.getSelectedRow();
+		System.out.println("gleich unter row"+row);
 		
 		for (int i = 0; i < 6; i++) 
 		{
-			jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
+			jtable.getColumnModel().getColumn(i+5).setCellEditor(new DefaultCellEditor(pointsBox));
 		}
+		
 		cellEditor.addCellEditorListener(new CellEditorListener() {
 			
 			@Override
 			public void editingStopped(ChangeEvent e) {
-				// TODO Auto-generated method stub
-				int row =jtable.getSelectedRow();
-				TableFrame.this.model.calcPoints(row);
+				
+				System.out.println("das ist in View"+row);
+				model.calcPoints(row);
 				}
 			@Override
 			public void editingCanceled(ChangeEvent e) {
@@ -192,20 +235,15 @@ public class TableFrame {
 		});
 		
 		
-		
 	}
 	private void initJBoxes(){
 		
 		Integer[] pointarr=new Integer[40];
-		
 		skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
 		
 		for (int i = 0; i < 40; i++) {pointarr[i]=new Integer(i+1);}
-		
 		pointsBox=new JComboBox<>(pointarr);
-
-
-		
+	
 	}
 
 }

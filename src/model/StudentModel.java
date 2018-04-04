@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.print.attribute.Size2DSyntax;
-import javax.swing.event.TableModelListener;
+
 import javax.swing.table.AbstractTableModel;
 
 
@@ -188,9 +187,7 @@ public class StudentModel extends AbstractTableModel{
 	public void add(Student st) {
 		
 		students.add(st);
-
 	  fireTableRowsInserted(students.size()-1,students.size()-1); //notifies listeners to changes at the end of the list
-		
 	
 	}
 
@@ -202,7 +199,8 @@ public class StudentModel extends AbstractTableModel{
 		return false;
 	}
 	public void calcPoints(int row){
-		if (row>=students.size()) {
+		if (row>=students.size()||row<0) {
+			System.out.println(row);
 			return;
 		}
 		Student st=students.get(row);
