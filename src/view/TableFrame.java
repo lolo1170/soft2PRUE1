@@ -29,16 +29,15 @@ import javax.swing.table.TableRowSorter;
 
 import model.Student;
 import model.StudentModel;
-import model.interfaces.I_ViewCallback;
-import model.interfaces.I_ViewStudentModel;
 
-public class TableFrame implements I_ViewCallback {
+
+public class TableFrame {
 
 	 private JFrame frame;
 	private static final int height = 600, width = 1000;
 
 	
-	private I_ViewStudentModel model;
+	private StudentModel model;
 	private JTable jtable;
 
 	private static JPanel northPnl;
@@ -55,11 +54,33 @@ public class TableFrame implements I_ViewCallback {
 	private static JComboBox<String> skzBox;
 	private static JComboBox<Integer>pointsBox;
 
-	public TableFrame(I_ViewStudentModel model) {
+	public TableFrame(StudentModel model) {
+		
 		frame=new JFrame("PSW2-Results");
 		this.model = model;
-		this.model.setViewCallback(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jtable = new JTable(model);
+		 frame.getContentPane().add(new JScrollPane(jtable), BorderLayout.CENTER);
+		
+		 frame.setSize(width, height);
+			
+
+		
+
+			idField = new JTextField(8);
+			nameField = new JTextField(12);
+			FirstnameField = new JTextField(12);
+			mail = new JTextField(20);
+			
+			//jtable.setSize(width, height);
+			
+			initJBoxes();
+			initRenderesEditors();
+			
+		 
+		 
+		 
+	
 		init();
 		
 		SwingUtilities.invokeLater(() -> {
@@ -71,44 +92,8 @@ public class TableFrame implements I_ViewCallback {
 
 	private void init() {
 		
-		frame.setSize(width, height);
-		northPnl = new JPanel();
-		frame.getContentPane().add(northPnl, BorderLayout.NORTH);
-		frame.setVisible(true);
-		
+		initNorthPanel();
 	
-		addBtn = new JButton("add");
-		removeBtn = new JButton("delete");
-		sortBtn = new JButton("sort");
-
-		idField = new JTextField(8);
-		nameField = new JTextField(12);
-		FirstnameField = new JTextField(12);
-		mail = new JTextField(20);
-		
-		jtable = new JTable(model);
-		jtable.invalidate();
-	    frame.add(jtable);
-		//jtable.setSize(width, height);
-		northPnl.add(idField);
-		northPnl.add(nameField);
-		initJBoxes();
-		initRenderesEditors();
-		northPnl.add(FirstnameField);
-		northPnl.add(skzBox);
-		northPnl.add(mail);
-		northPnl.add(addBtn);
-		northPnl.add(removeBtn);
-		northPnl.add(sortBtn);
-		model.addTableModelListener(new  TableModelListener() {
-			
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				e.getFirstRow();
-				System.out.println("Table changed");
-			//frame.repaint();
-			}
-		});
 		addBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -130,10 +115,9 @@ public class TableFrame implements I_ViewCallback {
 					
 					Student st = new Student(id, name, firstName, skz, mailAdress);
 					model.add(st);
-				
 					
 				}
-				}
+			}
 		});
 
 		removeBtn.addActionListener(new ActionListener() {
@@ -156,6 +140,26 @@ public class TableFrame implements I_ViewCallback {
 				
 			}
 		});
+
+	}
+	
+	private void initNorthPanel(){
+
+		addBtn = new JButton("add");
+		removeBtn = new JButton("delete");
+		sortBtn = new JButton("sort");
+		northPnl = new JPanel();
+		northPnl.add(idField);
+		northPnl.add(nameField);
+		northPnl.add(FirstnameField);
+		northPnl.add(skzBox);
+		northPnl.add(mail);
+		northPnl.add(addBtn);
+		northPnl.add(removeBtn);
+		northPnl.add(sortBtn);
+		frame.getContentPane().add(northPnl, BorderLayout.NORTH);
+		
+		
 		
 	}
 	private void initRenderesEditors(){
@@ -202,16 +206,6 @@ public class TableFrame implements I_ViewCallback {
 
 
 		
-	}
-
-	@Override
-	public void updateView()  {
-		System.out.println("in update view");
-		jtable.repaint();
-		frame.getContentPane().repaint();
-		frame.getContentPane().repaint();
-		frame.invalidate();
-		frame.repaint();
 	}
 
 }

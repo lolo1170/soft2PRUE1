@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.print.attribute.Size2DSyntax;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
-import model.interfaces.I_ViewCallback;
-import model.interfaces.I_ViewStudentModel;
 
-
-
-public class StudentModel extends AbstractTableModel implements I_ViewStudentModel {
+public class StudentModel extends AbstractTableModel{
 
 	/**
 	 * 
@@ -23,13 +20,10 @@ public class StudentModel extends AbstractTableModel implements I_ViewStudentMod
 																"UE1", "UE2", "UE3", "UE4", "UE5","UE6", "SUM", "GRADE" };
 
 	private List<Student> students;
-	private List<TableModelListener> listeners;
 
-	private I_ViewCallback viewCallback = null;
 	
 	public StudentModel() {
 		students = new ArrayList<Student>();
-		listeners = new ArrayList<TableModelListener>();
 		
 	}
 
@@ -135,17 +129,6 @@ public class StudentModel extends AbstractTableModel implements I_ViewStudentMod
 		return true;
 	}
 
-	@Override
-	public void removeTableModelListener(TableModelListener l) {
-		listeners.remove(l);
-	}
-	@Override
-	public void addTableModelListener(TableModelListener l) {
-	
-		System.out.println("Listener geadded");
-		listeners.add(l);
-	}
-
 	/**
 	 * Java DOC
 	 * 
@@ -204,10 +187,9 @@ public class StudentModel extends AbstractTableModel implements I_ViewStudentMod
 
 	public void add(Student st) {
 		
-		int newIndex = this.students.size();
 		students.add(st);
-	fireTableRowsInserted(newIndex, newIndex);
 
+	  fireTableRowsInserted(students.size()-1,students.size()-1); //notifies listeners to changes at the end of the list
 		
 	
 	}
@@ -239,12 +221,6 @@ public class StudentModel extends AbstractTableModel implements I_ViewStudentMod
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-	}
-
-	@Override
-	public void setViewCallback(I_ViewCallback viewCallback) {
-		this.viewCallback = viewCallback;
-		
 	}
 	
 }
