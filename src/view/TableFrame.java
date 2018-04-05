@@ -68,63 +68,8 @@ public class TableFrame {
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-
-			idField = new JTextField(8);
-			nameField = new JTextField(12);
-			FirstnameField = new JTextField(12);
-			mail = new JTextField(20);
-			
-			Integer[] pointarr=new Integer[40];
-			skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
-			
-			for (int i = 0; i < 40; i++) {pointarr[i]=new Integer(i+1);}
-			pointsBox=new JComboBox<>(pointarr);
-			
-			
-			northPnl=new JPanel();
-			addBtn = new JButton("add");
-			removeBtn = new JButton("delete");
-			sortBtn = new JButton("sort");
-			northPnl = new JPanel();
-			northPnl.add(idField);
-			northPnl.add(nameField);
-			northPnl.add(FirstnameField);
-			northPnl.add(skzBox);
-			northPnl.add(mail);
-			northPnl.add(addBtn);
-			northPnl.add(removeBtn);
-			northPnl.add(sortBtn);
-			frame.getContentPane().add(northPnl, BorderLayout.NORTH);
-			
-			jtable.getColumn("GRADE").setCellRenderer(new ColorCellRenderer());
-			
-			
-			cellEditor=new DefaultCellEditor(pointsBox);
-			int row =jtable.getSelectedRow();
-			System.out.println("gleich unter row"+row);
-			
-			for (int i = 0; i < 6; i++) 
-			{
-				jtable.getColumnModel().getColumn(i+5).setCellEditor(cellEditor);
-			}
-			
-			cellEditor.addCellEditorListener(new CellEditorListener() {
-				
-				@Override
-				public void editingStopped(ChangeEvent e) {
-					
-					
-					model.calcPoints(TableFrame.this.jtable.getSelectedRow());
-					}
-				@Override
-				public void editingCanceled(ChangeEvent e) {
-					cellEditor.stopCellEditing();
-				}
-			});
-			
-			
-			
-	
+		
+		
 		init();
 		
 		SwingUtilities.invokeLater(() -> {
@@ -135,9 +80,10 @@ public class TableFrame {
 	}
 
 	private void init() {
-		//initJBoxes();
-		//initNorthPanel();
-	//	initRenderesEditors();
+		initJBoxes();
+		initNorthPanel();
+	initRenderesEditors();
+	
 
 		addBtn.addActionListener(new ActionListener() {
 
@@ -188,11 +134,18 @@ public class TableFrame {
 	}
 	
 	private void initNorthPanel(){
-
+		
+		northPnl = new JPanel();
+		
 		addBtn = new JButton("add");
 		removeBtn = new JButton("delete");
 		sortBtn = new JButton("sort");
-		northPnl = new JPanel();
+		
+		idField = new JTextField(8);
+		nameField = new JTextField(12);
+		FirstnameField = new JTextField(12);
+		mail = new JTextField(20);
+		
 		northPnl.add(idField);
 		northPnl.add(nameField);
 		northPnl.add(FirstnameField);
@@ -218,6 +171,7 @@ public class TableFrame {
 		for (int i = 0; i < 6; i++) 
 		{
 			jtable.getColumnModel().getColumn(i+5).setCellEditor(new DefaultCellEditor(pointsBox));
+			jtable.getColumnModel().getColumn(i+5).setCellRenderer(new ColorCellRenderer());
 		}
 		
 		cellEditor.addCellEditorListener(new CellEditorListener() {
@@ -225,12 +179,13 @@ public class TableFrame {
 			@Override
 			public void editingStopped(ChangeEvent e) {
 				
-				System.out.println("das ist in View"+row);
-				model.calcPoints(row);
+				
+				//model.calcPoints(row);
 				}
 			@Override
 			public void editingCanceled(ChangeEvent e) {
 				cellEditor.stopCellEditing();
+				model.calcPoints(row);
 			}
 		});
 		

@@ -159,24 +159,24 @@ public class StudentModel extends AbstractTableModel{
 				st.setMail((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 4);
 				return;
 			case 5:
-				st.getPoints()[0] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 5);
+				st.getPoints()[0] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 5);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 				return;
 			case 6:
-				st.getPoints()[1] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 6);
+				st.getPoints()[1] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 6);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 				return;
 			case 7:
-				st.getPoints()[2] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 7);
+				st.getPoints()[2] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 7);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 				return;
 			case 8:
-				st.getPoints()[3] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 8);
+				st.getPoints()[3] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 8);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 				return;
 			case 9:
-				st.getPoints()[4] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 9);
+				st.getPoints()[4] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 9);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 				return;
 			case 10:
-				st.getPoints()[5] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 10);
+				st.getPoints()[5] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 10);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 				return;
-			case 11:st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 11);
+			case 11:st.calcPoints();fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
 			return;
 			case 12:st.setGrade((Student.Grades)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 12);
 			return;
@@ -200,7 +200,6 @@ public class StudentModel extends AbstractTableModel{
 	}
 	public void calcPoints(int row){
 		if (row>=students.size()||row<0) {
-			System.out.println(row);
 			return;
 		}
 		Student st=students.get(row);

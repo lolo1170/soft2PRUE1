@@ -192,17 +192,17 @@ public class StudentDBManager {
 		 * @param conn
 		 */
 		public static void createTables(Connection conn) {
+			
+			
+			
 			String createStudentsTableStr = 
-					"create table students (id varchar(30) primary key generated "
-					+ "always as identity,"+
+					"create table students (id varchar(30) primary key,"+
 			" name varchar(30), firstname varchar(30),skz varchar(30),mail varchar(30),ue1 integer,ue2 integer,u3 integer,u4 interger,ue5 integer,"
 			+ "ue6 integer )";  
 			try {
 				PreparedStatement createStudentsTableStmt = conn.prepareStatement(createStudentsTableStr);
 				createStudentsTableStmt.executeUpdate();
-				System.out.println("Hier schafft er es");
 			} catch (SQLException e) {
-				System.out.println("Hier schafft er es catch");
 				e.printStackTrace();
 			} 
 		}
