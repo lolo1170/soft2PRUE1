@@ -27,6 +27,34 @@ public class main {
 	
 		
 	TableFrame t=new TableFrame(new StudentModel());
+	StudentDBManager sm=null;
+	
+	
+	try{
+		
+		sm=StudentDBManager.getInstance();
+		
+		
+		sm.deleteAll();
+		sm.insertStudent(new Student("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
+		
+		
+		Student[]st=sm.getStudents();
+		for (Student studentGrades : st) {
+			System.out.println(studentGrades.getFirstName());
+		}
+		
+	}catch(SQLException e){
+		
+		e.printStackTrace();
+	} finally {
+		try {
+		
+			sm.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 		
 		
 

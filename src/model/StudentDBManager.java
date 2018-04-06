@@ -15,11 +15,12 @@ public class StudentDBManager {
 
 	
 	static {
+		
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 			getInstance(); 
 		} catch (SQLException | ClassNotFoundException e) {
-			
+			 e.printStackTrace();
 		}
 	}
 		/** Constant string for the database url */ 
@@ -29,13 +30,13 @@ public class StudentDBManager {
 		private static StudentDBManager INSTANCE; 
 	
 
-		public synchronized static StudentDBManager getInstance() throws SQLException {
+	 public synchronized static StudentDBManager getInstance() throws SQLException {
 			if (INSTANCE == null) 
 			{
 				INSTANCE = new StudentDBManager(); 
 			}
 			 	return INSTANCE;
-		}
+			}
 	
 		public Connection conn; 
 		private PreparedStatement insertStudentStmt; 
@@ -47,32 +48,35 @@ public class StudentDBManager {
 		
 		private StudentDBManager() throws SQLException {	
 			try {
-				conn = DriverManager.getConnection(DBURL);
-				 
+				//createTables(conn); 
+			conn = DriverManager.getConnection(DBURL);
 			} catch (Exception e) {
 				conn = DriverManager.getConnection(DBURL + ";create=true");
 				createTables(conn); 
 			}
+			
 			insertStudentStmt = conn
-					.prepareStatement("insert into students values(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			updateStudentStmt = conn
-					.prepareStatement("update students set ue1=?,where id=?");
+					.prepareStatement("insert into students values( ?, ?, ?, ?, ?)");
+			//updateStudentStmt = conn
+					//.prepareStatement("update students set ue1=?,where id=?");
 			selectStudentsStmt = conn
 					.prepareStatement("select * from students");
 			//selectStudentByNameStmt = conn
 				//	.prepareStatement("select * from students where name=?");
-			selectStudentByIdStmt = conn
-					.prepareStatement("select * from students where id=?");
+			//selectStudentByIdStmt = conn
+				//	.prepareStatement("select * from students where id=?");
 			deleteAllStmt = conn
-					.prepareStatement("delete from students");
+			
+			.prepareStatement("delete from students");
 		}
 		
-		public Student insertStudent(String id,String name,String firstName,String skz,String mail,int[]points) throws SQLException {
+		public Student insertStudent(String id,String name,String firstName,String skz,String mail) throws SQLException {
 			insertStudentStmt.setString(1,id);
 			insertStudentStmt.setString(2, name);
 			insertStudentStmt.setString(3, firstName);
 			insertStudentStmt.setString(4,skz);
 			insertStudentStmt.setString(5,mail);
+			insertStudentStmt.execute();
 			/*
 			insertStudentStmt.setInt(6,points[0]);
 			insertStudentStmt.setInt(7,points[1]);
@@ -84,6 +88,17 @@ public class StudentDBManager {
 			*/
 			return getStudentByName(name); 
 			}
+		
+		public Student insertStudent(Student s) throws SQLException{
+			insertStudentStmt.setString(1,s.getId());
+			insertStudentStmt.setString(2, s.getName());
+			insertStudentStmt.setString(3, s.getFirstName());
+			insertStudentStmt.setString(4,s.getSkz());
+			insertStudentStmt.setString(5,s.getMail());
+			insertStudentStmt.execute();
+			return s;
+			
+		}
 		
 		/**
 		 * Updates the data of a person with the given id. 
@@ -108,13 +123,13 @@ public class StudentDBManager {
 			ResultSet r = selectStudentsStmt.executeQuery(); 
 			while (r.next()) {
 				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5));
-				
+				/*
 				for (int i = 6; i < 12; i++) {
 					p.getPoints()[i-6]=r.getInt(i);
 				}
 				
 				p.calcPoints();
-				
+				*/
 				students.add(p);
 			}
 			return students.toArray(new Student[students.size()]);
@@ -190,21 +205,25 @@ public class StudentDBManager {
 		/**
 		 * Creates the Persons table. 
 		 * @param conn
+		 * @throws SQLException 
 		 */
-		public static void createTables(Connection conn) {
+		public static void createTables(Connection conn) throws SQLException {
 			
-			
-			
-			String createStudentsTableStr = 
-					"create table students (id varchar(30) primary key,"+
-			" name varchar(30), firstname varchar(30),skz varchar(30),mail varchar(30),ue1 integer,ue2 integer,u3 integer,u4 interger,ue5 integer,"
-			+ "ue6 integer )";  
+		String createStudentsTableStr = "create table students (id varchar(30) primary key,"+	" name varchar(30), firstname varchar(30),skz varchar(30),mail varchar(30))";  
+	//	String	createStudentsTableStr = "drop table Students";
 			try {
 				PreparedStatement createStudentsTableStmt = conn.prepareStatement(createStudentsTableStr);
 				createStudentsTableStmt.executeUpdate();
 			} catch (SQLException e) {
+				
 				e.printStackTrace();
-			} 
+			} finally{
+				/*
+				createStudentsTableStr = "drop table Students";
+				PreparedStatement createStudentsTableStmt = conn.prepareStatement(createStudentsTableStr);
+				createStudentsTableStmt.executeUpdate();
+				*/
+			}
 		}
 		
 		

@@ -165,8 +165,6 @@ public class TableFrame {
 		
 		
 		cellEditor=new DefaultCellEditor(pointsBox);
-		int row =jtable.getSelectedRow();
-		System.out.println("gleich unter row"+row);
 		
 		for (int i = 0; i < 6; i++) 
 		{
@@ -174,20 +172,6 @@ public class TableFrame {
 			jtable.getColumnModel().getColumn(i+5).setCellRenderer(new ColorCellRenderer());
 		}
 		
-		cellEditor.addCellEditorListener(new CellEditorListener() {
-			
-			@Override
-			public void editingStopped(ChangeEvent e) {
-				
-				
-				//model.calcPoints(row);
-				}
-			@Override
-			public void editingCanceled(ChangeEvent e) {
-				cellEditor.stopCellEditing();
-				model.calcPoints(row);
-			}
-		});
 		
 		
 	}

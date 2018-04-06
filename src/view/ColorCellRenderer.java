@@ -41,7 +41,7 @@ public class ColorCellRenderer extends DefaultTableCellRenderer{
 			
 			
 		}else{
-			
+			setBackground(Color.WHITE);
 			setText(value.toString());
 		}
 		
