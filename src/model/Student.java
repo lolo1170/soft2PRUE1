@@ -22,9 +22,12 @@ public class Student {
 		this.firstName=firstName;
 		this.mail=mail;
 		this.skz=skz;
-		for (int i = 0; i < points.length; i++) {
+		
+		for (int i = 0; i < points.length; i++) 
+		{
 			points[i]=-1;
 		}
+		calcPoints();
 	}
 	
 	public Student(String id,String name,String firstName,String skz,String mail,int ue1,int ue2,int ue3,int ue4,int ue5,int ue6,Grades grade){
@@ -43,10 +46,20 @@ public class Student {
 		for (int i = 0; i < points.length; i++) {
 			sumPoints+=points[i];
 		}
-		
 		this.grade=grade;
+	}
+	
+public Student(String id,String name,String firstName,String skz,String mail,int[]points){
 		
+		this.name=name;
+		this.id=id;
+		this.firstName=firstName;
+		this.mail=mail;
+		this.skz=skz;
 		
+		for (int i = 0; i < points.length; i++) {
+			sumPoints+=points[i];
+		}
 	}
 	
 	public Grades getGrade() {
@@ -82,11 +95,6 @@ public class Student {
 			return false;}
 		else if(!firstName.equals(other.firstName)) {
 			return false;
-			
-		}else if(!mail.equals(other.mail)){
-			
-			return false;
-			
 		}else if(!id.equals(other.id)){
 			
 			return false;

@@ -24,12 +24,12 @@ public class main {
 		
 	
 		//m.add(new StudentGrades("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
-	
+	StudentModel model=	new StudentModel();
 		
-	TableFrame t=new TableFrame(new StudentModel());
-	StudentDBManager sm=null;
+	TableFrame t=new TableFrame(model);
+	//StudentDBManager sm=null;
 	
-	
+	/*
 	try{
 		
 		sm=StudentDBManager.getInstance();
@@ -37,11 +37,13 @@ public class main {
 		
 		sm.deleteAll();
 		sm.insertStudent(new Student("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
+	sm.insertStudent(new Student("23","Hari","Pickl","521","harald.pickl@gmx.at"));
+	sm.insertStudent(new Student("28","Alois","Huch","521","@"));
 		
 		
 		Student[]st=sm.getStudents();
-		for (Student studentGrades : st) {
-			System.out.println(studentGrades.getFirstName());
+		for (Student students : st) {
+			model.add(students);
 		}
 		
 	}catch(SQLException e){
@@ -56,7 +58,7 @@ public class main {
 		}
 	}
 		
-		
+	*/	
 
 
 

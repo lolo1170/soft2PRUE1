@@ -1,7 +1,9 @@
 package model;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -19,21 +21,32 @@ public class StudentModel extends AbstractTableModel{
 																"UE1", "UE2", "UE3", "UE4", "UE5","UE6", "SUM", "GRADE" };
 
 	private List<Student> students;
-
+	private StudentDBManager db=null;
 	
 	public StudentModel() {
 		students = new ArrayList<Student>();
+		try {
+			db=StudentDBManager.getInstance();
+			Student[]inDB=db.getStudents();
+			for (int i = 0; i < inDB.length; i++) {
+				students.add(inDB[i]);
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
-	public void delete(int row){
+	public void delete(int row) throws SQLException{
 		
 		if (row<0||row>=students.size()) {return;}
 		
-		students.remove(row);
-		
+		Student delete=students.get(row);
+		students.remove(delete);
 		fireTableRowsDeleted(row, row);
-		
+		db.deleteStudentByID(delete.getId());
 		
 	}
 	/*
@@ -120,21 +133,22 @@ public class StudentModel extends AbstractTableModel{
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 
-		if (columnIndex==COLCOUNT-1||columnIndex==COLCOUNT-2) {
-			//12 is the Grade, it shoudl bbe edite by the program and not by user
-			return false;
+		if (columnIndex>=5||columnIndex<=10) {
+			//only the points can be  edited afterwards
+			return true;
 		}
-		// TODO look all cells are editable, Edin thinks SKZ and points
-		return true;
+		return false;
 	}
 
 	/**
 	 * Java DOC
 	 * 
 	 */
+	@SuppressWarnings("finally")
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		if (rowIndex>=students.size()) {
+		if (rowIndex>=students.size()) 
+		{
 			return ;
 		}
 
@@ -145,49 +159,61 @@ public class StudentModel extends AbstractTableModel{
 			switch (columnIndex) {
 			case 0:fireTableDataChanged();
 				st.setId((String) aValue);fireTableCellUpdated(rowIndex, 0);
-				return;
+				break;
 			case 1:fireTableDataChanged();fireTableCellUpdated(rowIndex, 1);
 				st.setName((String) aValue);
-				return;
+				break;
 			case 2:
 				st.setFirstName((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 2);
-				return;
+				break;
 			case 3:
 				st.setSkz((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 3);
-				return;
+				break;
 			case 4:
 				st.setMail((String) aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 4);
-				return;
+				break;
 			case 5:
-				st.getPoints()[0] = (int) aValue;fireTableDataChanged();fireTableCellUpdated(rowIndex, 5);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-				return;
+				st.getPoints()[0] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 5);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
+				break;
 			case 6:
 				st.getPoints()[1] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 6);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-				return;
+				
+				break;
 			case 7:
 				st.getPoints()[2] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 7);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-				return;
+				break;
 			case 8:
 				st.getPoints()[3] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 8);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-				return;
+				break;
 			case 9:
 				st.getPoints()[4] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 9);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-				return;
+				break;
 			case 10:
 				st.getPoints()[5] = (int) aValue;st.calcPoints();fireTableDataChanged();fireTableCellUpdated(rowIndex, 10);fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-				return;
+				break;
 			case 11:st.calcPoints();fireTableCellUpdated(rowIndex, 11);fireTableCellUpdated(rowIndex, 12);
-			return;
+			break;
 			case 12:st.setGrade((Student.Grades)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 12);
-			return;
+			break;
+			
 			}
+		}
+		try {
+			System.out.println("im update");
+			db.updateStudent(st.getId(), st.getPoints());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			
+			return;
 		}
 	}
 
-	public void add(Student st) {
+	public void add(Student st) throws SQLException {
 		
-		students.add(st);
-	  fireTableRowsInserted(students.size()-1,students.size()-1); //notifies listeners to changes at the end of the list
+		db.insertStudent(st);
+	students.add(st);
+	fireTableRowsInserted(students.size()-1,students.size()-1); //notifies listeners to changes at the end of the list
 	
 	}
 
@@ -198,8 +224,10 @@ public class StudentModel extends AbstractTableModel{
 		}
 		return false;
 	}
-	public void calcPoints(int row){
-		if (row>=students.size()||row<0) {
+	public void calcPoints(int row)
+	{
+		if (row>=students.size()||row<0) 
+		{
 			return;
 		}
 		Student st=students.get(row);

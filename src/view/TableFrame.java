@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.EventObject;
 
@@ -98,14 +99,19 @@ public class TableFrame {
 					String mailAdress = mail.getText();
 					String skz = (String) skzBox.getSelectedItem();
 				
-					model.add(new Student("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
-					model.add(new Student("28","Hari","Pickl","521","harald.pickl@gmx.at"));
-				model.add(new Student("28","Alois","Huch","521","@"));
+				//	model.add(new Student("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
+			//		model.add(new Student("28","Hari","Pickl","521","harald.pickl@gmx.at"));
+				//model.add(new Student("24","Alois","Huch","521","huch@"));
 				
 					if (id.isEmpty() || name.isEmpty() || firstName.isEmpty() || skz.isEmpty()) {return;}
 					
 					Student st = new Student(id, name, firstName, skz, mailAdress);
-					model.add(st);
+					try {
+						model.add(st);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
 				}
 			}
@@ -119,7 +125,12 @@ public class TableFrame {
 				
 					for (int i = 0; i < rows.length; i++)
 					{
-						model.delete(rows[i]);
+						try {
+							model.delete(rows[i]);
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 			}
 		});

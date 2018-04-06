@@ -44,60 +44,54 @@ public class StudentDBManager {
 		private PreparedStatement selectStudentByIdStmt; 
 		private PreparedStatement selectStudentByNameStmt; 
 		private PreparedStatement selectStudentsStmt; 
-		private PreparedStatement deleteAllStmt; 
+		private PreparedStatement deleteAllStmt;
+		private PreparedStatement deleteStudentByID;
 		
 		private StudentDBManager() throws SQLException {	
 			try {
-				//createTables(conn); 
+				
+			
 			conn = DriverManager.getConnection(DBURL);
+			createTables(conn);
 			} catch (Exception e) {
 				conn = DriverManager.getConnection(DBURL + ";create=true");
 				createTables(conn); 
 			}
 			
-			insertStudentStmt = conn
-					.prepareStatement("insert into students values( ?, ?, ?, ?, ?)");
-			//updateStudentStmt = conn
-					//.prepareStatement("update students set ue1=?,where id=?");
+			insertStudentStmt = conn.
+					prepareStatement("insert into students values( ?, ?, ?, ?, ?,?,?,?,?, ?, ?)");
+					//.prepareStatement("insert into students values( ?, ?, ?, ?, ?)"); vorher
+			updateStudentStmt = conn
+				.prepareStatement("update students set ue1=?,ue2=?,ue3=?,ue4=?,ue5=?,ue6=? where id=? ");
 			selectStudentsStmt = conn
 					.prepareStatement("select * from students");
-			//selectStudentByNameStmt = conn
-				//	.prepareStatement("select * from students where name=?");
-			//selectStudentByIdStmt = conn
-				//	.prepareStatement("select * from students where id=?");
-			deleteAllStmt = conn
 			
-			.prepareStatement("delete from students");
+			deleteStudentByID=conn.prepareStatement("delete from students where id=?");
+			deleteAllStmt = conn.prepareStatement("delete from students");
 		}
 		
-		public Student insertStudent(String id,String name,String firstName,String skz,String mail) throws SQLException {
+		public void insertStudent(String id,String name,String firstName,String skz,String mail) throws SQLException {
 			insertStudentStmt.setString(1,id);
 			insertStudentStmt.setString(2, name);
 			insertStudentStmt.setString(3, firstName);
 			insertStudentStmt.setString(4,skz);
 			insertStudentStmt.setString(5,mail);
 			insertStudentStmt.execute();
-			/*
-			insertStudentStmt.setInt(6,points[0]);
-			insertStudentStmt.setInt(7,points[1]);
-			insertStudentStmt.setInt(8,points[2]);
-			insertStudentStmt.setInt(9,points[3]);
-			insertStudentStmt.setInt(10,points[4]);
-			insertStudentStmt.setInt(11,points[5]);
-			insertStudentStmt.executeUpdate();
-			*/
-			return getStudentByName(name); 
 			}
 		
-		public Student insertStudent(Student s) throws SQLException{
+		public void insertStudent(Student s) throws SQLException{
 			insertStudentStmt.setString(1,s.getId());
 			insertStudentStmt.setString(2, s.getName());
 			insertStudentStmt.setString(3, s.getFirstName());
 			insertStudentStmt.setString(4,s.getSkz());
 			insertStudentStmt.setString(5,s.getMail());
+			insertStudentStmt.setInt(6, s.getPoints()[0]);
+	        insertStudentStmt.setInt(7, s.getPoints()[1]);
+	        insertStudentStmt.setInt(8, s.getPoints()[2]);
+	        insertStudentStmt.setInt(9, s.getPoints()[3]);
+	        insertStudentStmt.setInt(10, s.getPoints()[4]);
+	        insertStudentStmt.setInt(11, s.getPoints()[5]);
 			insertStudentStmt.execute();
-			return s;
-			
 		}
 		
 		/**
@@ -108,21 +102,37 @@ public class StudentDBManager {
 		 * @return the person object with the changed values 
 		 * @throws SQLException
 		 */
-		public Student updatePerons(String id,String name,String firstName,String skz,String mail,int[]points, Student.Grades grade) throws SQLException {
+		public void updateStudent(String id,int[]points) throws SQLException {
+			/*
+			 * Only the points can be updated The grade and the final sum is calclated from the view
+			 * 
+			 */
 			synchronized (updateStudentStmt) {
-				updateStudentStmt.setString(1, name);
-				//updateStudentStmt.setInt(2, (sex == Sex.Male ? 0 : 1));	
-			//	updateStudentStmt.setInt(3, id);
+				
+				updateStudentStmt.setString(7, id);
+				for (int i = 0; i < points.length; i++) 
+				{
+					updateStudentStmt.setInt(i+1, points[i]);
+					System.out.println(points[i]+"das sind die Puntke vom studenten");
+				}
 				updateStudentStmt.executeUpdate();
-				return getStudentById(id); 
 			}
+			updateStudentStmt.executeUpdate();
 		}
 		
 		public Student[] getStudents() throws SQLException {
 			List<Student> students = new ArrayList<Student>(); 
+		
 			ResultSet r = selectStudentsStmt.executeQuery(); 
+		
 			while (r.next()) {
-				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5));
+				int[]points=new int[6];
+				for (int i = 6; i < 12; i++) {
+					points[i-6]=r.getInt(i);
+					System.out.println(r.getInt(i)+"das sind points in get Students");
+				}
+				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5),points);
+				p.calcPoints();
 				/*
 				for (int i = 6; i < 12; i++) {
 					p.getPoints()[i-6]=r.getInt(i);
@@ -157,6 +167,7 @@ public class StudentDBManager {
 			}
 				p.calcPoints();
 				return p;
+				
 			} else { 
 				return null; 
 			}
@@ -187,13 +198,20 @@ public class StudentDBManager {
 				return null; 
 			}
 		}
+		
+		synchronized void deleteStudentByID(String id) throws SQLException{
+			deleteStudentByID.setString(1, id);
+			deleteStudentByID.execute();
+		}
+
+		
 		/**
 		 * Deletes all records from the Persons table. 
 		 * @throws SQLException
 		 */
+		
 		public void deleteAll() throws SQLException {
 			deleteAllStmt.execute(); 
-
 		}
 		/**
 		 * Closes the database connection. 
@@ -209,20 +227,16 @@ public class StudentDBManager {
 		 */
 		public static void createTables(Connection conn) throws SQLException {
 			
-		String createStudentsTableStr = "create table students (id varchar(30) primary key,"+	" name varchar(30), firstname varchar(30),skz varchar(30),mail varchar(30))";  
-	//	String	createStudentsTableStr = "drop table Students";
+		String createStudentsTableStr = "create table students (id varchar(30) primary key,"+" name varchar(30), firstname varchar(30),skz varchar(30),mail varchar(30), ue1 int,ue2 int, ue3 int, ue4 int, ue5 int, ue6 int)";  
+		//String	createStudentsTableStr = "drop table Students";
+		
 			try {
 				PreparedStatement createStudentsTableStmt = conn.prepareStatement(createStudentsTableStr);
 				createStudentsTableStmt.executeUpdate();
 			} catch (SQLException e) {
 				
-				e.printStackTrace();
+			//	e.printStackTrace();
 			} finally{
-				/*
-				createStudentsTableStr = "drop table Students";
-				PreparedStatement createStudentsTableStmt = conn.prepareStatement(createStudentsTableStr);
-				createStudentsTableStmt.executeUpdate();
-				*/
 			}
 		}
 		
