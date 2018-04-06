@@ -57,8 +57,10 @@ public Student(String id,String name,String firstName,String skz,String mail,int
 		this.mail=mail;
 		this.skz=skz;
 		
+		
 		for (int i = 0; i < points.length; i++) {
 			sumPoints+=points[i];
+			this.points[i]=points[i];
 		}
 	}
 	

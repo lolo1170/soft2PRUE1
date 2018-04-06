@@ -126,10 +126,13 @@ public class StudentDBManager {
 			ResultSet r = selectStudentsStmt.executeQuery(); 
 		
 			while (r.next()) {
+				
 				int[]points=new int[6];
+				System.out.println(r.getString(2));
 				for (int i = 6; i < 12; i++) {
 					points[i-6]=r.getInt(i);
 					System.out.println(r.getInt(i)+"das sind points in get Students");
+					//System.out.println(points[i]+"das sind im array die points die dem Stunden übergeben werden ");
 				}
 				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5),points);
 				p.calcPoints();
@@ -186,6 +189,7 @@ public class StudentDBManager {
 				selectStudentByIdStmt.setString(1, id);
 				r = selectStudentByIdStmt.executeQuery(); 
 			}
+			
 			if (r.next()) {
 				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5));
 				for (int i = 6; i < 12; i++) {

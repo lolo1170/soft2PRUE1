@@ -30,7 +30,12 @@ public class StudentModel extends AbstractTableModel{
 			Student[]inDB=db.getStudents();
 			for (int i = 0; i < inDB.length; i++) {
 				students.add(inDB[i]);
+				System.out.println(inDB[i].getFirstName());
+				for (int j = 0; j < 6; j++) {
 				
+						System.out.println(inDB[i].getPoints()[j]+"aus der Datenbank in Model");
+				}
+				System.out.println();
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
