@@ -3,23 +3,28 @@ package model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-
-
 import javax.swing.table.AbstractTableModel;
+/*
+ * Class which holds all students
+ * The Model for the JTable
+ * 
+ */
 
+/**
+ * @author Stefan
+ *
+ */
 
 public class StudentModel extends AbstractTableModel{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private final static int COLCOUNT = 13;
 	private static String[] colnames = { "ID", "NAME", "FIRSTNAME", "SKZ", "MAIL", 
 																"UE1", "UE2", "UE3", "UE4", "UE5","UE6", "SUM", "GRADE" };
 
+	
 	private List<Student> students;
 	private StudentDBManager db=null;
 	
@@ -30,12 +35,6 @@ public class StudentModel extends AbstractTableModel{
 			Student[]inDB=db.getStudents();
 			for (int i = 0; i < inDB.length; i++) {
 				students.add(inDB[i]);
-				System.out.println(inDB[i].getFirstName());
-				for (int j = 0; j < 6; j++) {
-				
-						System.out.println(inDB[i].getPoints()[j]+"aus der Datenbank in Model");
-				}
-				System.out.println();
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -44,6 +43,11 @@ public class StudentModel extends AbstractTableModel{
 		
 	}
 
+	/**
+	 * @param row
+	 * @throws SQLException
+	 * Deletes a Student from the table and from the database
+	 */
 	public void delete(int row) throws SQLException{
 		
 		if (row<0||row>=students.size()) {return;}
@@ -54,16 +58,10 @@ public class StudentModel extends AbstractTableModel{
 		db.deleteStudentByID(delete.getId());
 		
 	}
-	/*
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.table.TableModel#getColumnClass(int)
-	 */
+
 	@Override
 	public Class<?> getColumnClass(int index) {
 		
-		if (checkIndex(index)) {
 
 			if (index <= 4) {
 				return new String().getClass();
@@ -75,9 +73,10 @@ public class StudentModel extends AbstractTableModel{
 			} else if (index == 12) {
 				return new Student(null, null, null, null, null).getGrade().getClass();
 			} 
-		}
 		return null;
 	}
+
+
 
 	@Override
 	public int getColumnCount() {
@@ -94,15 +93,17 @@ public class StudentModel extends AbstractTableModel{
 		return students.size();
 	}
 
+	/**
+	 * @param rowIndex
+	 * @param columnIndex
+	 * @return the value in the asked column
+	 * Here i did not us a "D array i used a list where the row is in student in the list and the col the field of the stuent
+	 */
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-/*
-			if (students.size()<=rowIndex||rowIndex<0) {
-				return null;}
-	*/	
+
 		Student st = students.get(rowIndex);
 
-		if (checkIndex(columnIndex)) {
 			switch (columnIndex) {
 			case 0:
 				return st.getId();
@@ -130,36 +131,28 @@ public class StudentModel extends AbstractTableModel{
 				return st.sumPoints;
 			case 12:
 				return st.getGrade();
-			}
 		}
 		return null;
 	}
 
+
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 
-		if (columnIndex>=5||columnIndex<=10) {
-			//only the points can be  edited afterwards
+		if (columnIndex>=5&&columnIndex<=10) {
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * Java DOC
-	 * 
-	 */
 	@SuppressWarnings("finally")
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		if (rowIndex>=students.size()) 
-		{
-			return ;
-		}
+	
 
 		Student st = students.get(rowIndex);
 		
-		if (checkIndex(columnIndex)) {
+		
 			fireTableDataChanged();
 			switch (columnIndex) {
 			case 0:fireTableDataChanged();
@@ -200,36 +193,36 @@ public class StudentModel extends AbstractTableModel{
 			break;
 			case 12:st.setGrade((Student.Grades)aValue);fireTableDataChanged();fireTableCellUpdated(rowIndex, 12);
 			break;
-			
 			}
-		}
+		
 		try {
-			System.out.println("im update");
 			db.updateStudent(st.getId(), st.getPoints());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
-			
 			return;
 		}
 	}
 
-	public void add(Student st) throws SQLException {
+	/**
+	 * @param student
+	 * @throws SQLException
+	 * Adds a Student into the model and afterwards in the Table and in the Database
+	 */
+	public void add(Student student) throws SQLException {
 		
-		db.insertStudent(st);
-	students.add(st);
+		db.insertStudent(student);
+	students.add(student);
 	fireTableRowsInserted(students.size()-1,students.size()-1); //notifies listeners to changes at the end of the list
 	
 	}
 
-	private boolean checkIndex(int index) {
-		if (0 >= index || index <= COLCOUNT) 
-		{
-			return true;
-		}
-		return false;
-	}
-	public void calcPoints(int row)
+	/**
+	 * @param row
+	 * a student hast a point array and this methods sums up all points and 
+	 * caluclates the grade
+	 */
+	public void calcGrade(int row)
 	{
 		if (row>=students.size()||row<0) 
 		{
@@ -239,9 +232,12 @@ public class StudentModel extends AbstractTableModel{
 		st.calcPoints();
 		fireTableCellUpdated(row, COLCOUNT-2);
 		fireTableDataChanged();
-		
 	}
 	
+	/**
+	 * method for sorting the students in the list. We compare 2 Students by their name
+	 * 
+	 */
 	public void sort(){
 	fireTableRowsUpdated(0, getRowCount());
 		students.sort(new Comparator<Student>() {

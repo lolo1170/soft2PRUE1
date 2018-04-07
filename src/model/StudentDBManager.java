@@ -11,6 +11,10 @@ import java.util.List;
 
 
 
+/**
+ * @author Stefan
+ *
+ */
 public class StudentDBManager {
 
 	
@@ -42,15 +46,12 @@ public class StudentDBManager {
 		private PreparedStatement insertStudentStmt; 
 		private PreparedStatement updateStudentStmt; 
 		private PreparedStatement selectStudentByIdStmt; 
-		private PreparedStatement selectStudentByNameStmt; 
 		private PreparedStatement selectStudentsStmt; 
 		private PreparedStatement deleteAllStmt;
 		private PreparedStatement deleteStudentByID;
 		
 		private StudentDBManager() throws SQLException {	
 			try {
-				
-			
 			conn = DriverManager.getConnection(DBURL);
 			createTables(conn);
 			} catch (Exception e) {
@@ -60,16 +61,25 @@ public class StudentDBManager {
 			
 			insertStudentStmt = conn.
 					prepareStatement("insert into students values( ?, ?, ?, ?, ?,?,?,?,?, ?, ?)");
-					//.prepareStatement("insert into students values( ?, ?, ?, ?, ?)"); vorher
 			updateStudentStmt = conn
 				.prepareStatement("update students set ue1=?,ue2=?,ue3=?,ue4=?,ue5=?,ue6=? where id=? ");
 			selectStudentsStmt = conn
 					.prepareStatement("select * from students");
-			
-			deleteStudentByID=conn.prepareStatement("delete from students where id=?");
-			deleteAllStmt = conn.prepareStatement("delete from students");
+			deleteStudentByID=conn.
+					prepareStatement("delete from students where id=?");
+			deleteAllStmt = conn.
+					prepareStatement("delete from students");
 		}
 		
+		/**
+		 * @param id the id should be unique
+		 * @param name the name of the student to insert
+		 * @param firstName the first name
+		 * @param skz 
+		 * @param mail
+		 * @throws SQLException
+		 * inserts a new Student without any points. So the point are displayed as "-"
+		 */
 		public void insertStudent(String id,String name,String firstName,String skz,String mail) throws SQLException {
 			insertStudentStmt.setString(1,id);
 			insertStudentStmt.setString(2, name);
@@ -79,41 +89,40 @@ public class StudentDBManager {
 			insertStudentStmt.execute();
 			}
 		
-		public void insertStudent(Student s) throws SQLException{
-			insertStudentStmt.setString(1,s.getId());
-			insertStudentStmt.setString(2, s.getName());
-			insertStudentStmt.setString(3, s.getFirstName());
-			insertStudentStmt.setString(4,s.getSkz());
-			insertStudentStmt.setString(5,s.getMail());
-			insertStudentStmt.setInt(6, s.getPoints()[0]);
-	        insertStudentStmt.setInt(7, s.getPoints()[1]);
-	        insertStudentStmt.setInt(8, s.getPoints()[2]);
-	        insertStudentStmt.setInt(9, s.getPoints()[3]);
-	        insertStudentStmt.setInt(10, s.getPoints()[4]);
-	        insertStudentStmt.setInt(11, s.getPoints()[5]);
+		/**
+		 * @param student
+		 * @throws SQLException
+		 * Inserts a Student when it is alrready in the Database with all points
+		 */
+		public void insertStudent(Student student) throws SQLException{
+			insertStudentStmt.setString(1,student.getId());
+			insertStudentStmt.setString(2, student.getName());
+			insertStudentStmt.setString(3, student.getFirstName());
+			insertStudentStmt.setString(4,student.getSkz());
+			insertStudentStmt.setString(5,student.getMail());
+			insertStudentStmt.setInt(6, student.getPoints()[0]);
+	        insertStudentStmt.setInt(7, student.getPoints()[1]);
+	        insertStudentStmt.setInt(8, student.getPoints()[2]);
+	        insertStudentStmt.setInt(9, student.getPoints()[3]);
+	        insertStudentStmt.setInt(10, student.getPoints()[4]);
+	        insertStudentStmt.setInt(11, student.getPoints()[5]);
 			insertStudentStmt.execute();
 		}
 		
+	
 		/**
-		 * Updates the data of a person with the given id. 
-		 * @param id the id of the person (used as key in the Persons table)
-		 * @param name the new name of the person 
-		 * @param sex the possibly change sex of the person 
-		 * @return the person object with the changed values 
+		 * @param id the id of the student, should be unique
+		 * @param points the points the student achieved on the exercises
 		 * @throws SQLException
 		 */
 		public void updateStudent(String id,int[]points) throws SQLException {
-			/*
-			 * Only the points can be updated The grade and the final sum is calclated from the view
-			 * 
-			 */
+		
 			synchronized (updateStudentStmt) {
 				
 				updateStudentStmt.setString(7, id);
 				for (int i = 0; i < points.length; i++) 
 				{
 					updateStudentStmt.setInt(i+1, points[i]);
-					System.out.println(points[i]+"das sind die Puntke vom studenten");
 				}
 				updateStudentStmt.executeUpdate();
 			}
@@ -128,59 +137,22 @@ public class StudentDBManager {
 			while (r.next()) {
 				
 				int[]points=new int[6];
-				System.out.println(r.getString(2));
 				for (int i = 6; i < 12; i++) {
 					points[i-6]=r.getInt(i);
-					System.out.println(r.getInt(i)+"das sind points in get Students");
-					//System.out.println(points[i]+"das sind im array die points die dem Stunden übergeben werden ");
 				}
 				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5),points);
 				p.calcPoints();
-				/*
-				for (int i = 6; i < 12; i++) {
-					p.getPoints()[i-6]=r.getInt(i);
-				}
-				
-				p.calcPoints();
-				*/
 				students.add(p);
 			}
 			return students.toArray(new Student[students.size()]);
 		}
 		
-		/**
-		 * Gets the person object from the given name of a person. 
-		 * Reads the person with given name from the Persons table.  
-		 * @param name the name of the person to read 
-		 * @return the person object with that name
-		 * @throws SQLException
-		 */
-		public Student getStudentByName(String name) throws SQLException {
-			ResultSet r;
-			synchronized (selectStudentByNameStmt) {
 
-				selectStudentByNameStmt.setString(1, name);
-				r = selectStudentByNameStmt.executeQuery(); 
-			}
-			if (r.next()) 
-			{
-				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5));
-				for (int i = 6; i < 12; i++) {
-					p.getPoints()[i-6]=r.getInt(i);
-			}
-				p.calcPoints();
-				return p;
-				
-			} else { 
-				return null; 
-			}
-		}
 		
+
 		/**
-		 * Gets the person object from the given id of a person. 
-		 * Reads the person with given id from the Persons table.  
-		 * @param id the unique id of the person 
-		 * @return the person object with that id
+		 * @param id of the hstudent
+		 * @return
 		 * @throws SQLException
 		 */
 		public Student getStudentById(String id) throws SQLException {
@@ -192,17 +164,23 @@ public class StudentDBManager {
 			
 			if (r.next()) {
 				Student p = new Student(r.getString(1),r.getString(2), r.getString(3),r.getString(4),r.getString(5));
-				for (int i = 6; i < 12; i++) {
+				//Also insert the points
+				for (int i = 6; i < 12; i++)
+				{
 					p.getPoints()[i-6]=r.getInt(i);
 				}
 				p.calcPoints();
 				return p;
-			
 			} else { 
 				return null; 
 			}
 		}
 		
+		/**
+		 * @param id
+		 * delete one student from the database
+		 * @throws SQLException
+		 */
 		synchronized void deleteStudentByID(String id) throws SQLException{
 			deleteStudentByID.setString(1, id);
 			deleteStudentByID.execute();
@@ -210,7 +188,7 @@ public class StudentDBManager {
 
 		
 		/**
-		 * Deletes all records from the Persons table. 
+		 * Deletes all records from the Students table. 
 		 * @throws SQLException
 		 */
 		
@@ -225,7 +203,7 @@ public class StudentDBManager {
 			conn.close();
 		}
 		/**
-		 * Creates the Persons table. 
+		 * Creates the Student  table. 
 		 * @param conn
 		 * @throws SQLException 
 		 */
@@ -238,8 +216,6 @@ public class StudentDBManager {
 				PreparedStatement createStudentsTableStmt = conn.prepareStatement(createStudentsTableStr);
 				createStudentsTableStmt.executeUpdate();
 			} catch (SQLException e) {
-				
-			//	e.printStackTrace();
 			} finally{
 			}
 		}

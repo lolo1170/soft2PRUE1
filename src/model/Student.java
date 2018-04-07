@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * @author Stefan
+ *Class which holds one students and his points + grade
+ */
+
 public class Student {
 
 	private String id;
@@ -82,6 +87,7 @@ public Student(String id,String name,String firstName,String skz,String mail,int
 		
 	}
 	
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -105,6 +111,9 @@ public Student(String id,String name,String firstName,String skz,String mail,int
 	return true;
 	}
 
+	/**
+	 * sums up all points and calculates the grade
+	 */
 	public void calcPoints(){
 			int sum =0;
 			boolean notAllSubmited=false;

@@ -1,16 +1,9 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.Comparator;
-import java.util.EventObject;
-
-import javax.jws.Oneway;
-import javax.swing.CellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,18 +13,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
 
 import model.Student;
 import model.StudentModel;
 
 
+/**
+ * @author Stefan
+ *class for the Frame, the view.
+ *It holds all buttons and thexfields and is also the conrtoller(what happens when i cklicl on add)
+ */
 public class TableFrame {
 
 	 private JFrame frame;
@@ -55,13 +46,11 @@ public class TableFrame {
 	private static JComboBox<String> skzBox;
 	private static JComboBox<Integer>pointsBox;
 	
-	private static DefaultCellEditor cellEditor;
 
 	public TableFrame(StudentModel model) {
 		
 	
 		this.model = model;
-		
 		jtable = new JTable(model);
 		
 		frame=new JFrame("PSW2-Results");
@@ -99,17 +88,12 @@ public class TableFrame {
 					String mailAdress = mail.getText();
 					String skz = (String) skzBox.getSelectedItem();
 				
-				//	model.add(new Student("22", "Stefan", "plavsic","521", "stef.plav@gmail.com"));
-			//		model.add(new Student("28","Hari","Pickl","521","harald.pickl@gmx.at"));
-				//model.add(new Student("24","Alois","Huch","521","huch@"));
-				
 					if (id.isEmpty() || name.isEmpty() || firstName.isEmpty() || skz.isEmpty()) {return;}
 					
 					Student st = new Student(id, name, firstName, skz, mailAdress);
 					try {
 						model.add(st);
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					
@@ -128,7 +112,6 @@ public class TableFrame {
 						try {
 							model.delete(rows[i]);
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -175,15 +158,11 @@ public class TableFrame {
 		jtable.getColumn("GRADE").setCellRenderer(new ColorCellRenderer());
 		
 		
-		cellEditor=new DefaultCellEditor(pointsBox);
-		
 		for (int i = 0; i < 6; i++) 
 		{
 			jtable.getColumnModel().getColumn(i+5).setCellEditor(new DefaultCellEditor(pointsBox));
 			jtable.getColumnModel().getColumn(i+5).setCellRenderer(new ColorCellRenderer());
 		}
-		
-		
 		
 	}
 	private void initJBoxes(){
