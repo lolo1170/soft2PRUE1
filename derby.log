@@ -1,8 +1,8 @@
 ----------------------------------------------------------------
-Sat Apr 07 13:14:42 CEST 2018:
-Booten von Derby-Version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): Instanz a816c00e-0162-9fd0-c71c-00000e994610
-für Datenbankverzeichnis C:\Users\Stefan\git\soft2PRUE1\studentsdb mit Class Loader sun.misc.Launcher$AppClassLoader@659e0bfd
-Geladen aus file:/C:/Users/Stefan/Desktop/db-derby-10.14.1.0-bin/lib/derby.jar
+Sun Apr 08 21:22:28 CEST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0162-a6b5-b0ee-00000eb0c700 
+on database directory C:\Users\Stefan\git\soft2PRUE1\studentsdb with class loader sun.misc.Launcher$AppClassLoader@659e0bfd 
+Loaded from file:/C:/Users/Stefan/git/soft2PRUE1/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_161-b12
 user.dir=C:\Users\Stefan\git\soft2PRUE1
@@ -10,4 +10,4 @@ os.name=Windows 10
 os.arch=amd64
 os.version=10.0
 derby.system.home=null
-Datenbank-Class Loader wurde gestartet - derby.database.classpath=''
+Database Class Loader started - derby.database.classpath=''

@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
 /**
  * @author Stefan
  *
@@ -42,15 +40,15 @@ public class StudentDBManager {
 			 	return INSTANCE;
 			}
 	
-		public Connection conn; 
-		private PreparedStatement insertStudentStmt; 
-		private PreparedStatement updateStudentStmt; 
-		private PreparedStatement selectStudentByIdStmt; 
-		private PreparedStatement selectStudentsStmt; 
-		private PreparedStatement deleteAllStmt;
-		private PreparedStatement deleteStudentByID;
+		private Connection conn; 
+	 	private final PreparedStatement insertStudentStmt; 
+		 private final PreparedStatement updateStudentStmt; 
+		  private PreparedStatement selectStudentByIdStmt; 
+		private final PreparedStatement selectStudentsStmt; 
+		 private final PreparedStatement deleteAllStmt;
+		 private final PreparedStatement deleteStudentByID;
 		
-		private StudentDBManager() throws SQLException {	
+		private  StudentDBManager() throws SQLException {	
 			try {
 			conn = DriverManager.getConnection(DBURL);
 			createTables(conn);
@@ -153,9 +151,12 @@ public class StudentDBManager {
 		/**
 		 * @param id of the hstudent
 		 * @return
-		 * @throws SQLException
+		 * @throws Exception 
 		 */
-		public Student getStudentById(String id) throws SQLException {
+		public Student getStudentById(String id) throws Exception {
+			if (id==null) {
+				 throw new Exception("Student is null");
+			}
 			ResultSet r;
 			synchronized (selectStudentByIdStmt) {
 				selectStudentByIdStmt.setString(1, id);

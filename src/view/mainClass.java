@@ -1,6 +1,15 @@
 package view;
 
 
+/*
+ * Please add the derby.jar
+ * derbyclient.jar
+ * derbytools.jar
+ * if it doesnt work
+ * Sorry
+ * 
+ * 
+ */
 import model.StudentModel;
 
 public class mainClass {

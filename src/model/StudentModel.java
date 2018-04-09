@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.management.remote.SubjectDelegationPermission;
 import javax.swing.table.AbstractTableModel;
 /*
  * Class which holds all students
@@ -16,6 +18,14 @@ import javax.swing.table.AbstractTableModel;
  *
  */
 
+/**
+ * @author Stefan
+ *
+ */
+/**
+ * @author Stefan
+ *
+ */
 public class StudentModel extends AbstractTableModel{
 
 
@@ -26,20 +36,23 @@ public class StudentModel extends AbstractTableModel{
 
 	
 	private List<Student> students;
-	private StudentDBManager db=null;
 	
 	public StudentModel() {
 		students = new ArrayList<Student>();
-		try {
-			db=StudentDBManager.getInstance();
-			Student[]inDB=db.getStudents();
-			for (int i = 0; i < inDB.length; i++) {
-				students.add(inDB[i]);
+	
+			Student[] inDB;
+			try {
+				inDB = StudentDBManager.getInstance().getStudents();
+				for (int i = 0; i < inDB.length; i++) {
+					students.add(inDB[i]);
+					}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+			
+	
 		
 	}
 
@@ -55,27 +68,9 @@ public class StudentModel extends AbstractTableModel{
 		Student delete=students.get(row);
 		students.remove(delete);
 		fireTableRowsDeleted(row, row);
-		db.deleteStudentByID(delete.getId());
+		StudentDBManager.getInstance().deleteStudentByID(delete.getId());
 		
 	}
-
-	@Override
-	public Class<?> getColumnClass(int index) {
-		
-
-			if (index <= 4) {
-				return new String().getClass();
-
-			} else if (index > 4 && index <= 11) {
-
-				return new Integer(0).getClass();
-			
-			} else if (index == 12) {
-				return new Student(null, null, null, null, null).getGrade().getClass();
-			} 
-		return null;
-	}
-
 
 
 	@Override
@@ -145,10 +140,14 @@ public class StudentModel extends AbstractTableModel{
 		return false;
 	}
 
+
 	@SuppressWarnings("finally")
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 	
+		if (aValue==null) {
+			return;
+		}
 
 		Student st = students.get(rowIndex);
 		
@@ -196,11 +195,9 @@ public class StudentModel extends AbstractTableModel{
 			}
 		
 		try {
-			db.updateStudent(st.getId(), st.getPoints());
+			StudentDBManager.getInstance().updateStudent(st.getId(), st.getPoints());
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally{
-			return;
 		}
 	}
 
@@ -211,7 +208,7 @@ public class StudentModel extends AbstractTableModel{
 	 */
 	public void add(Student student) throws SQLException {
 		
-		db.insertStudent(student);
+	StudentDBManager.getInstance().insertStudent(student);
 	students.add(student);
 	fireTableRowsInserted(students.size()-1,students.size()-1); //notifies listeners to changes at the end of the list
 	
@@ -219,8 +216,8 @@ public class StudentModel extends AbstractTableModel{
 
 	/**
 	 * @param row
-	 * a student hast a point array and this methods sums up all points and 
-	 * caluclates the grade
+	 * a student has a point array and this methods sums up all points and 
+	 * calculates the grade
 	 */
 	public void calcGrade(int row)
 	{
@@ -240,8 +237,8 @@ public class StudentModel extends AbstractTableModel{
 	 */
 	public void sort(){
 	fireTableRowsUpdated(0, getRowCount());
-		students.sort(new Comparator<Student>() {
-
+		
+	students.sort(new Comparator<Student>() {
 			@Override
 			public int compare( Student o1, Student o2) {
 				return o1.getName().compareTo(o2.getName());

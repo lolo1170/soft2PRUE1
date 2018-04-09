@@ -21,7 +21,7 @@ import model.StudentModel;
 /**
  * @author Stefan
  *class for the Frame, the view.
- *It holds all buttons and thexfields and is also the conrtoller(what happens when i cklicl on add)
+ *It holds all buttons and thexfields and is also the conrtoller(what happens when i cklick on add)
  */
 public class TableFrame {
 
@@ -29,27 +29,27 @@ public class TableFrame {
 	private static final int height = 600, width = 1000;
 
 	
-	private StudentModel model;
-	private JTable jtable;
+	private final StudentModel model;
+	private final JTable jtable;
 
-	private static JPanel northPnl;
+	private final JPanel northPnl;
 
-	private static JButton addBtn;
-	private static JButton removeBtn;
-	private static JButton sortBtn;
+	private final JButton addBtn;
+	private final JButton removeBtn;
+	private  final JButton sortBtn;
 
-	private static JTextField idField;
-	private static JTextField nameField;
-	private static JTextField FirstnameField;
-	private static JTextField mail;
+	private  final JTextField idField;
+	private  final JTextField nameField;
+	private  final JTextField FirstnameField;
+	private  final JTextField mail;
 
-	private static JComboBox<String> skzBox;
-	private static JComboBox<Integer>pointsBox;
+	private final  JComboBox<String> skzBox;
+	private  final JComboBox<Integer>pointsBox;
 	
 
 	public TableFrame(StudentModel model) {
 		
-	
+		northPnl=new JPanel();
 		this.model = model;
 		jtable = new JTable(model);
 		
@@ -58,10 +58,29 @@ public class TableFrame {
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+
+		addBtn = new JButton("add");
+		removeBtn = new JButton("delete");
+		sortBtn = new JButton("sort");
+		
+		idField = new JTextField(8);
+		nameField = new JTextField(12);
+		FirstnameField = new JTextField(12);
+		mail = new JTextField(20);
 		
 		
-		init();
+		skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
 		
+		
+		Integer[] pointarr=new Integer[40];
+		
+	
+		
+		for (int i = 0; i < 40; i++) {pointarr[i]=new Integer(i+1);}
+		
+		pointsBox=new JComboBox<>(pointarr);
+	
+	init();
 		SwingUtilities.invokeLater(() -> {
 			frame.pack();
 			frame.setLocation(200, 200);
@@ -69,8 +88,10 @@ public class TableFrame {
 		});
 	}
 
-	private void init() {
-		initJBoxes();
+	/**
+	 * inits the JFrame and adds listeners to the buttons
+	 */
+	private final void init() {
 		initNorthPanel();
 	initRenderesEditors();
 	
@@ -91,11 +112,15 @@ public class TableFrame {
 					if (id.isEmpty() || name.isEmpty() || firstName.isEmpty() || skz.isEmpty()) {return;}
 					
 					Student st = new Student(id, name, firstName, skz, mailAdress);
-					try {
-						model.add(st);
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
+				
+						try {
+							model.add(st);
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+					
+					
+				
 					
 				}
 			}
@@ -109,11 +134,12 @@ public class TableFrame {
 				
 					for (int i = 0; i < rows.length; i++)
 					{
-						try {
-							model.delete(rows[i]);
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
+							try {
+								model.delete(rows[i]);
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 					}
 			}
 		});
@@ -127,18 +153,11 @@ public class TableFrame {
 
 	}
 	
+	/**
+	 * adds the buttons into the panel
+	 */
 	private void initNorthPanel(){
-		
-		northPnl = new JPanel();
-		
-		addBtn = new JButton("add");
-		removeBtn = new JButton("delete");
-		sortBtn = new JButton("sort");
-		
-		idField = new JTextField(8);
-		nameField = new JTextField(12);
-		FirstnameField = new JTextField(12);
-		mail = new JTextField(20);
+
 		
 		northPnl.add(idField);
 		northPnl.add(nameField);
@@ -153,6 +172,9 @@ public class TableFrame {
 		
 		
 	}
+	/**
+	 * inits the Renderer and the editor and installs it
+	 */
 	private void initRenderesEditors(){
 
 		jtable.getColumn("GRADE").setCellRenderer(new ColorCellRenderer());
@@ -165,14 +187,5 @@ public class TableFrame {
 		}
 		
 	}
-	private void initJBoxes(){
-		
-		Integer[] pointarr=new Integer[40];
-		skzBox = new JComboBox<String>(new String[] { "521", "531", "567" });
-		
-		for (int i = 0; i < 40; i++) {pointarr[i]=new Integer(i+1);}
-		pointsBox=new JComboBox<>(pointarr);
-	
 	}
-
-}
+	

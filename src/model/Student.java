@@ -131,7 +131,6 @@ public Student(String id,String name,String firstName,String skz,String mail,int
 				}
 				sum+=points[i];
 			}
-			
 		}
 		sumPoints=sum;
 		if (notAllSubmited) {
@@ -154,7 +153,7 @@ public Student(String id,String name,String firstName,String skz,String mail,int
 		}
 		
 	}
-	
+	//geters and Setters for one Student
 	public String getId() {
 		return id;
 	}
